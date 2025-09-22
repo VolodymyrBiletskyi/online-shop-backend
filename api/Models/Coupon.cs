@@ -12,16 +12,18 @@ namespace api.Models
         public string Code { get; set; } = null!;
         public CouponType Type { get; set; } = CouponType.Percent;
         public decimal Value { get; set; }
-        public DateTime StartsAt { get; set; } 
-        public DateTime EndsAt { get; set; }
+        public DateTime? StartsAt { get; set; }
+        public DateTime? EndsAt { get; set; }
         public int UsageLimit { get; set; } = 0;
         public int UsedCount { get; set; } = 0;
         public bool IsActive { get; set; } = true;
 
-        public enum CouponType
-        {
-            Percent = 0,
-            Fixed = 1
-        }
     }
+    
+    public enum CouponType
+    {
+         Percent = 0,
+        Fixed = 1
+    }
+
 }

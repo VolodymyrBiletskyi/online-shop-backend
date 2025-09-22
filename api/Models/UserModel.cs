@@ -15,11 +15,12 @@ namespace api.Models
         public string PhoneNumber { get; set; } = null!;
         public UserRole Role { get; set; } = UserRole.Customer;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public enum UserRole
-        {
-            Customer = 0,
-            Admin = 1
-        }
 
     }
+    public enum UserRole
+    {
+        Customer = 0,
+        Admin = 1
+     }
+
 }

@@ -21,5 +21,7 @@ namespace api.Models
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
+        public ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
     }
 }

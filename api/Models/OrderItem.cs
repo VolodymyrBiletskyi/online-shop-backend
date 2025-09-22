@@ -14,10 +14,10 @@ namespace api.Models
         public Guid ProductId { get; set; }
         public Product Product { get; set; } = null!;
         public Guid? VariantId { get; set; }
-        public ProductVariants? ProductVariants { get; set; }
+        public ProductVariant? ProductVariant { get; set; }
         
-        public string Product_name_snapshot { get; set; } = null!;
-        public string Sku_snapshot { get; set; } = null!;
+        public string ProductNameSnapshot { get; set; } = null!;
+        public string SkuSnapshot { get; set; } = null!;
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
         public decimal TotalLine { get; set; }

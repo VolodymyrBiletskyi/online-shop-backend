@@ -12,26 +12,26 @@ namespace api.Models
         public Guid UserId { get; set; }
         public UserModel User { get; set; } = null!;
         public string OrderNumber { get; set; } = null!;
-        public OrderStatus Status { get; set; } = OrderStatus.created;
+        public OrderStatus Status { get; set; } = OrderStatus.Created;
 
         public int Total_amount { get; set; }
-        public int Subtotal_amount { get; set; }
-        public int Disscount_amount { get; set; }
-        public int Tax_amount { get; set; }
+        public int SubtotalAmount { get; set; }
+        public int DisscountAmount { get; set; }
+        public int TaxAmount { get; set; }
         public int Ship_amount { get; set; }
         public string Currency { get; set; } = "USD";
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime? PaidAt { get; set; } 
+        public DateTime? PaidAt { get; set; }
 
-        public enum OrderStatus
-        {
-            created = 0,
-            paid = 1,
-            shipped = 2,
-            delivered = 3,
-            cancelled = 4,
-            refunded = 5
-        }
+    }
+    public enum OrderStatus
+    {
+        Created = 0,
+        Paid = 1,
+        Shipped = 2,
+        Delivered = 3,
+        Cancelled = 4,
+        Refunded = 5
     }
 }

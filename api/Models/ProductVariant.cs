@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace api.Models
 {
-    public class ProductVariants
+    public class ProductVariant
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 

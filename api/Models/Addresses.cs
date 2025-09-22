@@ -11,8 +11,8 @@ namespace api.Models
 
         public Guid Userid { get; set; }
         public UserModel User { get; set; } = null!;
-        
-        public AddresType Type { get; set; } = AddresType.Shipping;
+
+        public UserAddresType Type { get; set; } = UserAddresType.Shipping;
         public string Country { get; set; } = null!;
         public string City { get; set; } = null!;
         public string Street { get; set; } = null!;
@@ -20,11 +20,11 @@ namespace api.Models
         public string PostalCode { get; set; } = null!;
 
         public bool IsDefault { get; set; } = false;
-
-        public enum AddresType
-        {
-            Shipping = 0,
-            Billing = 1
-        }
+    }
+    
+    public enum UserAddresType
+    {
+        Shipping = 0,
+        Billing = 1
     }
 }

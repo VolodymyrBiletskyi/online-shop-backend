@@ -10,12 +10,12 @@ namespace api.Models
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public Guid ProductId { get; set; }
-        public Product Products { get; set; } = null!;
+        public Product Product { get; set; } = null!;
         public Guid? VariantId { get; set; }
-        public ProductVariants? productVariants { get; set; }
+        public ProductVariant? ProductVariant { get; set; }
 
-        public int Quantity_on_hand { get; set; } = 0;
-        public int Quantity_reserved { get; set; } = 0;
+        public int QuantityOnHand { get; set; } = 0;
+        public int QuantityReserved { get; set; } = 0;
 
     }
 }

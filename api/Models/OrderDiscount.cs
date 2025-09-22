@@ -11,8 +11,8 @@ namespace api.Models
 
         public Guid OrderId { get; set; }
         public Order Order { get; set; } = null!;
-        public Guid CouponId { get; set; }
-        public Coupon Coupon { get; set; } = null!;
+        public Guid? CouponId { get; set; }
+        public Coupon? Coupon { get; set; }
 
         public string? Description { get; set; }
         public decimal Amount { get; set; } 

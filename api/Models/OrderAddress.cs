@@ -20,10 +20,11 @@ namespace api.Migrations
         public string BuildingNumber { get; set; } = null!;
         public string PostalCode { get; set; } = null!;
 
-        public enum OrderAddresType
-        {
-            Shipping = 0,
-            Billing = 1
-        }
+    }
+
+    public enum OrderAddresType
+    {
+        Shipping = 0,
+        Billing = 1
     }
 }
