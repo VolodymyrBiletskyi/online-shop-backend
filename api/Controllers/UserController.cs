@@ -2,14 +2,49 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+using api.Dto.User;
+using api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    
+    [Route("api/users")]
+    [ApiController]
     public class UserController : ControllerBase
     {
-    
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService)
+        {
+            _userService = userService;
+        }
+
+        // public async Task<IActionResult<>> CreateAsync(CreateUserDto createUserDto)
+        // {
+        //     await _userService.CreateAsync(createUserDto.FullName, createUserDto.Email, createUserDto.Password);
+        // }
+
+        [HttpGet] //Get all Users
+        public async Task<ActionResult<List<UserDto>>> GetAll(CancellationToken ct)
+        {
+            var users = await _userService.GetAllAsync(ct);
+            return Ok(users);
+        }
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<UserDto>> GetById(Guid id, CancellationToken ct)
+        {
+            var user = await _userService.GetByIdAsync(id, ct);
+            return user is null ? NotFound() : Ok(user);
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult<UserDto>> Create([FromBody] CreateUserDto dto, CancellationToken ct)
+        {
+            var created = await _userService.CreateAsync(dto, ct);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        }
+
+        
     }
 }
