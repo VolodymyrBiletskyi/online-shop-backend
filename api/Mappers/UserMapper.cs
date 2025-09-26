@@ -9,7 +9,7 @@ namespace api.Mappers
 {
     public static class UserMapper
     {
-        public static UserDto ToDto(User user)
+        public static UserDto ToDto(this User user)
         {
             return new UserDto
             {
@@ -21,7 +21,7 @@ namespace api.Mappers
             };
         }
 
-        public static User ToEntity(CreateUserDto dto,string passwordHash) 
+        public static User ToEntity(CreateUserDto dto, string passwordHash)
         {
             return new User
             {
@@ -32,6 +32,14 @@ namespace api.Mappers
                 CreatedAt = DateTime.UtcNow,
                 PasswordHash = passwordHash
             };
+        }
+
+        public static void ApplyUpdateFrom(this User entity, UpdateUserDto dto)
+        {
+            entity.Email = dto.Email;
+            entity.FullName = dto.FullName;
+            entity.PhoneNumber = dto.PhoneNumber;
+
         }
     }
 }

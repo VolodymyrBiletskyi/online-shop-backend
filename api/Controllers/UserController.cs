@@ -45,6 +45,26 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
+        [HttpPut("id:guid")]
+        public async Task<ActionResult<UserDto>> Update(Guid id, [FromBody] UpdateUserDto updateDto, CancellationToken ct)
+        {
+            try
+            {
+                var update = await _userService.UpdateAsync(id, updateDto, ct);
+                return Ok(update);
+
+            }
+            catch (InvalidOperationException ex) when (ex.Message == "User does not exist")
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex) when (ex.Message == "Email is already taken")
+            {
+                return Conflict(new { message = ex.Message });
+            }
+              
+        }
+
         
     }
 }

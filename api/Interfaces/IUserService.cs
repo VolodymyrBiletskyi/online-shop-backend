@@ -10,8 +10,9 @@ namespace api.Interfaces
     public interface IUserService
     {
         Task<IReadOnlyList<UserDto>> GetAllAsync(CancellationToken ct = default);
-        
+
         Task<UserDto> CreateAsync(CreateUserDto dto, CancellationToken ct = default);
         Task<UserDto> GetByIdAsync(Guid id, CancellationToken ct = default);
+        Task<UserDto> UpdateAsync(Guid id,UpdateUserDto updateDto, CancellationToken ct = default);
     }
 }
