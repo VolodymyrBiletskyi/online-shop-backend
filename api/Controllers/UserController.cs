@@ -1,9 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dto.User;
+using api.Contracts.Users.Request;
+using api.Contracts.Users.Response;
 using api.Interfaces;
+using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -19,11 +24,7 @@ namespace api.Controllers
             _userService = userService;
         }
 
-        // public async Task<IActionResult<>> CreateAsync(CreateUserDto createUserDto)
-        // {
-        //     await _userService.CreateAsync(createUserDto.FullName, createUserDto.Email, createUserDto.Password);
-        // }
-
+        [Authorize]
         [HttpGet] //Get all Users
         public async Task<ActionResult<List<UserDto>>> GetAll(CancellationToken ct)
         {
@@ -38,7 +39,7 @@ namespace api.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Create([FromBody] CreateUserDto dto, CancellationToken ct)
         {
             var created = await _userService.CreateAsync(dto, ct);
@@ -62,7 +63,22 @@ namespace api.Controllers
             {
                 return Conflict(new { message = ex.Message });
             }
-              
+
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<AuthResult>> Login([FromBody]LoginUserDto loginDto,CancellationToken ct)
+        {
+            var authResult = await _userService.LoginAsync(loginDto, ct);
+        
+
+            Response.Cookies.Append("AuthToken", authResult.Token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                Expires = new DateTimeOffset(authResult.ExpiresAtUtc)
+            });
+            return Ok(authResult);
         }
 
         

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dto.User;
+using api.Contracts.Users.Request;
+using api.Contracts.Users.Response;
 using api.Models;
 
 namespace api.Mappers
@@ -40,6 +42,16 @@ namespace api.Mappers
             entity.FullName = dto.FullName;
             entity.PhoneNumber = dto.PhoneNumber;
 
+        }
+
+        public static AuthResult ToAuthResult(this User user, string token, DateTime expiresAt)
+        {
+            return new AuthResult
+            {
+                User = user.ToDto(),
+                Token = token,
+                ExpiresAtUtc = expiresAt
+            };
         }
     }
 }
