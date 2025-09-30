@@ -5,17 +5,18 @@ using System.Threading.Tasks;
 
 namespace api.Models
 {
-    public class UserModel
+    public class User
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public string Email { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
         public string FullName { get; set; } = null!;
-        public string PhoneNumber { get; set; } = null!;
+        public string? PhoneNumber { get; set; }
         public UserRole Role { get; set; } = UserRole.Customer;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? CreatedAt { get; set; }
 
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
     public enum UserRole
     {

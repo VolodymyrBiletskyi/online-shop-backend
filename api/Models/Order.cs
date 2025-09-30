@@ -10,7 +10,7 @@ namespace api.Models
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public Guid UserId { get; set; }
-        public UserModel User { get; set; } = null!;
+        public User User { get; set; } = null!;
         public string OrderNumber { get; set; } = null!;
         public OrderStatus Status { get; set; } = OrderStatus.Created;
 
