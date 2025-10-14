@@ -9,6 +9,8 @@ using api.Contracts.Users.Response;
 using api.Interfaces;
 using api.Mappers;
 using Humanizer;
+using api.Models;
+using api.Extensions;
 
 namespace api.Services
 {
@@ -17,11 +19,14 @@ namespace api.Services
         private readonly IUserRepository _userRepo;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtProvider _jwtProvider;
-        public UserService(IUserRepository userRepo, IPasswordHasher passwordHasher, IJwtProvider jwtProvider)
+        private readonly IValidator _validator;
+        public UserService(IUserRepository userRepo, IPasswordHasher passwordHasher, IJwtProvider jwtProvider,IValidator validator)
         {
             _userRepo = userRepo;
             _passwordHasher = passwordHasher;
             _jwtProvider = jwtProvider;
+            _validator = validator;
+
         }
 
         public async Task<IReadOnlyList<UserDto>> GetAllAsync(CancellationToken ct)
@@ -30,7 +35,7 @@ namespace api.Services
             return users.Select(UserMapper.ToDto).ToList();
         }
 
-        public async Task<UserDto?> GetByIdAsync(Guid id, CancellationToken ct = default)
+        public async Task<UserDto?> GetByIdAsync(Guid id, CancellationToken ct)
         {
             var user = await _userRepo.GetByIdAsync(id, ct);
             return user is null ? null : UserMapper.ToDto(user);
@@ -38,13 +43,14 @@ namespace api.Services
 
         public async Task<UserDto> CreateAsync(CreateUserDto dto, CancellationToken ct)
         {
-            var existingemail = await _userRepo.GetByEmailAsync(dto.Email, ct);
-            if (existingemail is not null)
-            {
-                throw new InvalidOperationException("Email is already taken");
-            }
+            _validator.ValidateCreateUser(dto);
 
+            var email = dto.Email.Trim().ToLowerInvariant(); 
+            if (await _userRepo.GetByEmailAsync(email, ct) is not null)
+                throw new InvalidOperationException("Email is already taken");
+        
             var passwordHash = _passwordHasher.Hash(dto.Password);
+
             var entity = UserMapper.ToEntity(dto,passwordHash);
             
             await _userRepo.AddAsync(entity, ct);
@@ -52,7 +58,7 @@ namespace api.Services
             return UserMapper.ToDto(entity);
         }
 
-        public async Task<UserDto> UpdateAsync(Guid id, UpdateUserDto updateDto, CancellationToken ct = default)
+        public async Task<UserDto> UpdateAsync(Guid id, UpdateUserDto updateDto, CancellationToken ct )
         {
             var existingUser = await _userRepo.GetByIdAsync(id, ct);
             if (existingUser is null)
@@ -77,7 +83,7 @@ namespace api.Services
             
         }
 
-        public async Task<AuthResult> LoginAsync(LoginUserDto logindDto, CancellationToken ct = default)
+        public async Task<AuthResult> LoginAsync(LoginUserDto logindDto, CancellationToken ct)
         {
             var user = await _userRepo.GetByEmailAsync(logindDto.Email)
                 ?? throw new Exception("User not found");
@@ -96,6 +102,15 @@ namespace api.Services
 
             return user.ToAuthResult(token, expiresAt);
 
+        }
+
+        public async Task<bool> DeleteAsync(Guid id,CancellationToken ct)
+        {
+            var user = await _userRepo.GetByIdAsync(id);
+            if (user == null) return false;
+
+            await _userRepo.DeleteAsync(id,ct);
+            return true;
         }
     }
 }

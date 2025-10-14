@@ -8,6 +8,6 @@ namespace api.Interfaces
 {
     public interface IJwtProvider
     {
-        string GenerateToken(User user);
+        public string GenerateToken(User user);
     }    
 }

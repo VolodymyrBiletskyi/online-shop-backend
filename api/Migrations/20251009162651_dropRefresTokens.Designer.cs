@@ -13,8 +13,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250926211800_updateuser")]
-    partial class updateuser
+    [Migration("20251009162651_dropRefresTokens")]
+    partial class dropRefresTokens
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
