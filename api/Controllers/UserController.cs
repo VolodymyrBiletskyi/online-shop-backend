@@ -10,6 +10,7 @@ using api.Interfaces;
 using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens.Experimental;
 
 namespace api.Controllers
 {
@@ -24,13 +25,14 @@ namespace api.Controllers
             _userService = userService;
         }
 
-        [Authorize]
-        [HttpGet] //Get all Users
+        [HttpGet] 
         public async Task<ActionResult<List<UserDto>>> GetAll(CancellationToken ct)
         {
             var users = await _userService.GetAllAsync(ct);
             return Ok(users);
         }
+
+        [Authorize]
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<UserDto>> GetById(Guid id, CancellationToken ct)
         {
@@ -67,20 +69,20 @@ namespace api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AuthResult>> Login([FromBody]LoginUserDto loginDto,CancellationToken ct)
+        public async Task<ActionResult<AuthResult>> Login([FromBody] LoginUserDto loginDto, CancellationToken ct)
         {
             var authResult = await _userService.LoginAsync(loginDto, ct);
-        
 
-            Response.Cookies.Append("AuthToken", authResult.Token, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                Expires = new DateTimeOffset(authResult.ExpiresAtUtc)
-            });
             return Ok(authResult);
         }
 
+        [HttpDelete("{id:guid}")]
+        public async Task<ActionResult> DeleteAsync([FromRoute] Guid id, CancellationToken ct)
+        {
+            var deleted = await _userService.DeleteAsync(id, ct);
+            if (!deleted) return NotFound("User don't found");
+            return Ok(new {message = "User deleted successfully"});
+        }
         
     }
 }

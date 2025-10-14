@@ -15,6 +15,8 @@ namespace api.Interfaces
           
         Task AddAsync(User entity, CancellationToken ct = default);
         Task<int> SaveChangesAsync(CancellationToken ct = default);
+
+        Task<User?> DeleteAsync(Guid id, CancellationToken ct = default);
         
     }
 }

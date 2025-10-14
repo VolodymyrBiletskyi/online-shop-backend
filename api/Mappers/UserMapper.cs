@@ -48,9 +48,12 @@ namespace api.Mappers
         {
             return new AuthResult
             {
-                User = user.ToDto(),
+                Id = user.Id,
+                FullName = user.FullName,
+                Email = user.Email,
                 Token = token,
-                ExpiresAtUtc = expiresAt
+                ExpiresAtUtc = expiresAt,
+                
             };
         }
     }

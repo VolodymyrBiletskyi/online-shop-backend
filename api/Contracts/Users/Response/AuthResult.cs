@@ -8,7 +8,9 @@ namespace api.Contracts.Users.Response
 {
     public class AuthResult
     {
-        public UserDto User { get; set; } = null!;
+        public Guid Id { get; set; }
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
         public string Token { get; set; } = null!;
         public DateTime ExpiresAtUtc { get; set; }
     }
