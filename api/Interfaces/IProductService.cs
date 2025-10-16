@@ -9,6 +9,6 @@ namespace api.Interfaces
 {
     public interface IProductService
     {
-        Task<IReadOnlyList<ProductDto>> GetAllAsync( CancellationToken ct = default);
+        Task<IReadOnlyList<ProductDto>> GetAllAsync();
     }
 }

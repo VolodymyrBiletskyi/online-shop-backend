@@ -26,34 +26,34 @@ namespace api.Controllers
         }
 
         [HttpGet] 
-        public async Task<ActionResult<List<UserDto>>> GetAll(CancellationToken ct)
+        public async Task<ActionResult<List<UserDto>>> GetAll()
         {
-            var users = await _userService.GetAllAsync(ct);
+            var users = await _userService.GetAllAsync();
             return Ok(users);
         }
 
         [Authorize]
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<UserDto>> GetById(Guid id, CancellationToken ct)
+        public async Task<ActionResult<UserDto>> GetById(Guid id)
         {
-            var user = await _userService.GetByIdAsync(id, ct);
+            var user = await _userService.GetByIdAsync(id);
             return user is null ? NotFound() : Ok(user);
         }
 
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Create([FromBody] CreateUserDto dto, CancellationToken ct)
+        public async Task<ActionResult<UserDto>> Create([FromBody] CreateUserDto dto)
         {
-            var created = await _userService.CreateAsync(dto, ct);
+            var created = await _userService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("id:guid")]
-        public async Task<ActionResult<UserDto>> Update(Guid id, [FromBody] UpdateUserDto updateDto, CancellationToken ct)
+        public async Task<ActionResult<UserDto>> Update(Guid id, [FromBody] UpdateUserDto updateDto)
         {
             try
             {
-                var update = await _userService.UpdateAsync(id, updateDto, ct);
+                var update = await _userService.UpdateAsync(id, updateDto);
                 return Ok(update);
 
             }
@@ -69,17 +69,17 @@ namespace api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AuthResult>> Login([FromBody] LoginUserDto loginDto, CancellationToken ct)
+        public async Task<ActionResult<AuthResult>> Login([FromBody] LoginUserDto loginDto)
         {
-            var authResult = await _userService.LoginAsync(loginDto, ct);
+            var authResult = await _userService.LoginAsync(loginDto);
 
             return Ok(authResult);
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<ActionResult> DeleteAsync([FromRoute] Guid id, CancellationToken ct)
+        public async Task<ActionResult> DeleteAsync([FromRoute] Guid id)
         {
-            var deleted = await _userService.DeleteAsync(id, ct);
+            var deleted = await _userService.DeleteAsync(id);
             if (!deleted) return NotFound("User don't found");
             return Ok(new {message = "User deleted successfully"});
         }

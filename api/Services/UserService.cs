@@ -29,38 +29,38 @@ namespace api.Services
 
         }
 
-        public async Task<IReadOnlyList<UserDto>> GetAllAsync(CancellationToken ct)
+        public async Task<IReadOnlyList<UserDto>> GetAllAsync()
         {
-            var users = await _userRepo.GetAllAsync(ct);
+            var users = await _userRepo.GetAllAsync();
             return users.Select(UserMapper.ToDto).ToList();
         }
 
-        public async Task<UserDto?> GetByIdAsync(Guid id, CancellationToken ct)
+        public async Task<UserDto?> GetByIdAsync(Guid id)
         {
-            var user = await _userRepo.GetByIdAsync(id, ct);
+            var user = await _userRepo.GetByIdAsync(id);
             return user is null ? null : UserMapper.ToDto(user);
         }
 
-        public async Task<UserDto> CreateAsync(CreateUserDto dto, CancellationToken ct)
+        public async Task<UserDto> CreateAsync(CreateUserDto dto)
         {
             _validator.ValidateCreateUser(dto);
 
             var email = dto.Email.Trim().ToLowerInvariant(); 
-            if (await _userRepo.GetByEmailAsync(email, ct) is not null)
+            if (await _userRepo.GetByEmailAsync(email) is not null)
                 throw new InvalidOperationException("Email is already taken");
         
             var passwordHash = _passwordHasher.Hash(dto.Password);
 
             var entity = UserMapper.ToEntity(dto,passwordHash);
             
-            await _userRepo.AddAsync(entity, ct);
-            await _userRepo.SaveChangesAsync(ct);
+            await _userRepo.AddAsync(entity);
+            await _userRepo.SaveChangesAsync();
             return UserMapper.ToDto(entity);
         }
 
-        public async Task<UserDto> UpdateAsync(Guid id, UpdateUserDto updateDto, CancellationToken ct )
+        public async Task<UserDto> UpdateAsync(Guid id, UpdateUserDto updateDto)
         {
-            var existingUser = await _userRepo.GetByIdAsync(id, ct);
+            var existingUser = await _userRepo.GetByIdAsync(id);
             if (existingUser is null)
                 throw new InvalidOperationException("User does not exist");
 
@@ -69,7 +69,7 @@ namespace api.Services
 
             if (emailChanged)
             {
-                var byEmail = await _userRepo.GetByEmailAsync(newEmail, ct);
+                var byEmail = await _userRepo.GetByEmailAsync(newEmail);
 
                 if (byEmail is not null && byEmail.Id != id)
                     throw new InvalidOperationException("Email is already taken");
@@ -78,12 +78,12 @@ namespace api.Services
 
             existingUser.ApplyUpdateFrom(updateDto);
 
-            await _userRepo.SaveChangesAsync(ct);
+            await _userRepo.SaveChangesAsync();
             return existingUser.ToDto();
             
         }
 
-        public async Task<AuthResult> LoginAsync(LoginUserDto logindDto, CancellationToken ct)
+        public async Task<AuthResult> LoginAsync(LoginUserDto logindDto)
         {
             var user = await _userRepo.GetByEmailAsync(logindDto.Email)
                 ?? throw new Exception("User not found");
@@ -104,12 +104,12 @@ namespace api.Services
 
         }
 
-        public async Task<bool> DeleteAsync(Guid id,CancellationToken ct)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var user = await _userRepo.GetByIdAsync(id);
             if (user == null) return false;
 
-            await _userRepo.DeleteAsync(id,ct);
+            await _userRepo.DeleteAsync(id);
             return true;
         }
     }

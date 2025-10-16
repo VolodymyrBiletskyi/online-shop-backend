@@ -22,9 +22,9 @@ namespace api.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductDto>>> GetAll(CancellationToken ct)
+        public async Task<ActionResult<List<ProductDto>>> GetAll()
         {
-            var products = await _productService.GetAllAsync(ct);
+            var products = await _productService.GetAllAsync();
             return Ok(products);
         }
     }

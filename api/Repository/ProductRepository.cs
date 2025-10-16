@@ -17,7 +17,7 @@ namespace api.Repository
             _dbContext = dbContext;
         }
 
-        public async Task<IReadOnlyList<Product>> GetAllAsync(CancellationToken ct)
+        public async Task<IReadOnlyList<Product>> GetAllAsync()
         {
             return await _dbContext.Products
             .AsNoTracking()

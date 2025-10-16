@@ -16,9 +16,9 @@ namespace api.Services
         {
             _productRepo = productRepo;
         }
-        public async Task<IReadOnlyList<ProductDto>> GetAllAsync(CancellationToken ct = default)
+        public async Task<IReadOnlyList<ProductDto>> GetAllAsync()
         {
-            var getProducts = await _productRepo.GetAllAsync(ct);
+            var getProducts = await _productRepo.GetAllAsync();
             return getProducts.Select(ProductMapper.ToDto).ToList();
         }
     }
