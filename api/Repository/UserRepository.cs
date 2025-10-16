@@ -20,40 +20,40 @@ namespace api.Repository
             _dbContext = dbContext;
         }
 
-        public async Task<IReadOnlyList<User>> GetAllAsync(CancellationToken ct)
+        public async Task<IReadOnlyList<User>> GetAllAsync()
         {
             return await _dbContext.Users
             .AsNoTracking()
-            .ToListAsync(ct);
+            .ToListAsync();
         }
 
-        public async Task<User?> GetByEmailAsync(string email, CancellationToken ct)
+        public async Task<User?> GetByEmailAsync(string email)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email, ct);
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public Task<User?> GetByIdAsync(Guid id, CancellationToken ct)
+        public Task<User?> GetByIdAsync(Guid id)
         {
-            return _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, ct); 
+            return _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id); 
         }
 
-        public Task AddAsync(User entity, CancellationToken ct)
+        public Task AddAsync(User entity)
         {
-            return _dbContext.AddAsync(entity, ct).AsTask();
+            return _dbContext.AddAsync(entity).AsTask();
         }
 
-        public Task<int> SaveChangesAsync(CancellationToken ct)
+        public Task<int> SaveChangesAsync()
         {
-            return _dbContext.SaveChangesAsync(ct);
+            return _dbContext.SaveChangesAsync();
         }
-        public async Task<User?> DeleteAsync(Guid id,CancellationToken ct)
+        public async Task<User?> DeleteAsync(Guid id)
         {
             var userModel = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
 
             if (userModel == null) return null;
 
             _dbContext.Users.Remove(userModel);
-            await _dbContext.SaveChangesAsync(ct);
+            await _dbContext.SaveChangesAsync();
             return userModel;
         }
 

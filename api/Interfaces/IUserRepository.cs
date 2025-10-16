@@ -8,15 +8,15 @@ namespace api.Interfaces
 {
     public interface IUserRepository
     {
-        Task<IReadOnlyList<User>> GetAllAsync(CancellationToken ct = default);
-        Task<User?> GetByIdAsync(Guid id, CancellationToken ct = default); 
-        Task<User?> GetByEmailAsync(string email, CancellationToken ct = default);
+        Task<IReadOnlyList<User>> GetAllAsync();
+        Task<User?> GetByIdAsync(Guid id); 
+        Task<User?> GetByEmailAsync(string email);
         
           
-        Task AddAsync(User entity, CancellationToken ct = default);
-        Task<int> SaveChangesAsync(CancellationToken ct = default);
+        Task AddAsync(User entity);
+        Task<int> SaveChangesAsync();
 
-        Task<User?> DeleteAsync(Guid id, CancellationToken ct = default);
+        Task<User?> DeleteAsync(Guid id);
         
     }
 }

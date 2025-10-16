@@ -8,6 +8,6 @@ namespace api.Interfaces
 {
     public interface IProductRepository
     {
-        Task<IReadOnlyList<Product>> GetAllAsync(CancellationToken ct = default);
+        Task<IReadOnlyList<Product>> GetAllAsync();
     }
 }
