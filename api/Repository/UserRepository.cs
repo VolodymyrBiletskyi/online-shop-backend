@@ -10,8 +10,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repository
 {
-
-
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _dbContext;
@@ -42,9 +40,9 @@ namespace api.Repository
             return _dbContext.AddAsync(entity).AsTask();
         }
 
-        public Task<int> SaveChangesAsync()
+        public async Task<int> SaveChangesAsync()
         {
-            return _dbContext.SaveChangesAsync();
+            return await _dbContext.SaveChangesAsync();
         }
         public async Task<User?> DeleteAsync(Guid id)
         {

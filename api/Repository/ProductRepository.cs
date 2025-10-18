@@ -23,5 +23,32 @@ namespace api.Repository
             .AsNoTracking()
             .ToListAsync();
         }
+
+        public Task<Product?> GetByIdAsync(Guid id)
+        {
+            return _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public Task CrateAsync(Product entity)
+        {
+            return _dbContext.AddAsync(entity).AsTask();
+        }
+
+        public async Task<int> SaveAsync()
+        {
+            return await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<Product?> DeleteAsync(Guid id)
+        {
+            var productModel = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (productModel == null) return null;
+
+            _dbContext.Products.Remove(productModel);
+
+            await _dbContext.SaveChangesAsync();
+            return productModel;
+        }
     }
 }

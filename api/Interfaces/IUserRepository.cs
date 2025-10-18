@@ -11,11 +11,8 @@ namespace api.Interfaces
         Task<IReadOnlyList<User>> GetAllAsync();
         Task<User?> GetByIdAsync(Guid id); 
         Task<User?> GetByEmailAsync(string email);
-        
-          
         Task AddAsync(User entity);
         Task<int> SaveChangesAsync();
-
         Task<User?> DeleteAsync(Guid id);
         
     }

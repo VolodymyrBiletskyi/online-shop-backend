@@ -10,5 +10,9 @@ namespace api.Interfaces
     public interface IProductService
     {
         Task<IReadOnlyList<ProductDto>> GetAllAsync();
+        Task<ProductDto> CreateAsync(CreateProduct createProduct);
+        Task<ProductDto> GetByIdAsync(Guid id);
+        Task<ProductDto> UpdateAsync(Guid id, UpdateProductRequest updateProduct);
+        Task<bool> DeleteAsync(Guid id);
     }
 }
