@@ -27,6 +27,19 @@ namespace api.Mappers
             };
         }
 
+        public static void ApplyUpdate(this Product entity,UpdateProductRequest updateProduct)
+        {
+            entity.CategoryId = updateProduct.CategoryId;
+            entity.Name = updateProduct.Name;
+            entity.Slug = string.IsNullOrWhiteSpace(updateProduct.Slug)
+                ? GenerateSlug(updateProduct.Name)
+                : updateProduct.Slug;
+            entity.Description = updateProduct.Description;
+            entity.SortOrder = updateProduct.SortOrder;
+            entity.BasePrice = updateProduct.BasePrice;
+            entity.IsActive = updateProduct.IsActive;
+        }
+
         public static Product ToEntity(this CreateProduct createProduct)
         {
             return new Product

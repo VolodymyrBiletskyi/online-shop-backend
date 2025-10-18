@@ -19,8 +19,9 @@ namespace api.Services
         private readonly IUserRepository _userRepo;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtProvider _jwtProvider;
-        private readonly IValidator _validator;
-        public UserService(IUserRepository userRepo, IPasswordHasher passwordHasher, IJwtProvider jwtProvider,IValidator validator)
+        private readonly IUserValidator _validator;
+        public UserService(IUserRepository userRepo, IPasswordHasher passwordHasher,
+        IJwtProvider jwtProvider, IUserValidator validator)
         {
             _userRepo = userRepo;
             _passwordHasher = passwordHasher;

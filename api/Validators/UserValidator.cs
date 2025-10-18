@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using api.Contracts.Users.Request;
 using api.Interfaces;
 
-namespace api.Extensions
+namespace api.Validators
 {
-    public class Validator : IValidator
+    public class UserValidator : IUserValidator
     {
         public bool IsValidEmail(string email)
         {
@@ -24,7 +24,7 @@ namespace api.Extensions
 
         public void ValidateCreateUser(CreateUserDto dto)
         {
-           var email = dto.Email?.Trim();
+            var email = dto.Email?.Trim();
             if (string.IsNullOrWhiteSpace(email))
                 throw new ArgumentException("Email is required");
 

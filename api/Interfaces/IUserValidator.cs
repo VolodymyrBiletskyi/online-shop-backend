@@ -7,9 +7,8 @@ using api.Contracts.Users.Request;
 
 namespace api.Interfaces
 {
-    public interface IValidator
+    public interface IUserValidator
     {
         void ValidateCreateUser(CreateUserDto dto);
-        
     }
 }
