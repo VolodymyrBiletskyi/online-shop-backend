@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Models;
 
-namespace api.Dto.User
+namespace api.Dto
 {
     public class UserDto
     {
