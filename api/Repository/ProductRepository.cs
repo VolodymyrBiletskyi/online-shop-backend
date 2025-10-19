@@ -41,7 +41,7 @@ namespace api.Repository
 
         public async Task<Product?> DeleteAsync(Guid id)
         {
-            var productModel = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
+            var productModel = await GetByIdAsync(id);
 
             if (productModel == null) return null;
 

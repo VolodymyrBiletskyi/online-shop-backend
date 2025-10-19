@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using api.Dto.User;
+using api.Dto;
 
-namespace api.Contracts.Users.Response
+namespace api.Contracts.Users
 {
     public class AuthResult
     {

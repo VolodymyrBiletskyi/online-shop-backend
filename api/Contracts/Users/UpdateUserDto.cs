@@ -1,20 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using api.Models;
 
-namespace api.Contracts.Users.Request
+namespace api.Contracts.Users
 {
-    public class CreateUserDto
+    public class UpdateUserDto
     {
-        [Required]    
         public string Email { get; set; } = null!;
-        [Required]    
         public string FullName { get; set; } = null!;
         public string? PhoneNumber { get; set; }
-        [Required]    
-        public string Password { get; set; } = null!;
     }
 }

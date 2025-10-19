@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Contracts.Products;
-using api.Dto.Product;
+using api.Dto;
 using api.Models;
 
 namespace api.Mappers

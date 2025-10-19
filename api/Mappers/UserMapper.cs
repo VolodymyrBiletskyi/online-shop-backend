@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using api.Dto.User;
-using api.Contracts.Users.Request;
-using api.Contracts.Users.Response;
+using api.Dto;
+using api.Contracts.Users;
 using api.Models;
 
 namespace api.Mappers
