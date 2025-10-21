@@ -17,6 +17,6 @@ namespace api.Models
         public ProductVariant? ProductVariant { get; set; }
 
         public int Quantity { get; set; }
-        public decimal Unit_price_snapshot { get; set; }
+        public decimal UnitPriceSnapshot { get; set; }
     }
 }

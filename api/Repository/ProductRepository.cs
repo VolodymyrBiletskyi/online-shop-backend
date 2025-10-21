@@ -50,5 +50,23 @@ namespace api.Repository
             await _dbContext.SaveChangesAsync();
             return productModel;
         }
+
+        public Task<Product?> GetWithVariantsAsync(Guid id)
+        {
+            return _dbContext.Products
+                .Include(p => p.Variants)
+                .Include(p => p.Images)
+                .SingleOrDefaultAsync(p => p.Id == id);
+        }
+
+        public Task<Product?> GetBySlugAsync(string slug)
+        {
+            return _dbContext.Products.SingleOrDefaultAsync(p => p.Slug == slug);
+        }
+
+        public Task<bool> SlugExistsAsync(string slug)
+        {
+            return _dbContext.Products.AnyAsync(p => p.Slug == slug);
+        }
     }
 }
