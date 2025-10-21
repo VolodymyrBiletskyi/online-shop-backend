@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Contracts.Products;
+using api.Contracts.Variant;
 using api.Dto;
 using api.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -15,10 +16,12 @@ namespace api.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IVariantService _variantService;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService,IVariantService variantService)
         {
             _productService = productService;
+            _variantService = variantService;
         }
 
         [HttpGet]
@@ -55,5 +58,7 @@ namespace api.Controllers
             if (!deleted) return NotFound("Product dont't found");
             return Ok(new { message = "Product deleted successfully" });
         }
+
+        
     }
 }

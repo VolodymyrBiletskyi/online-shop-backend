@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using api.Models;
 
-namespace api.Models
+namespace api.Dto
 {
-    public class ProductVariant
+    public class ProductVariantDto
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } 
 
         public Guid ProductId { get; set; }
-        public Product Products { get; set; } = null!;
-
         public string Sku { get; set; } = null!;
         public string? Title { get; set; }
         public decimal? PriceOverride { get; set; }
         public decimal? Weight { get; set; }
-        public JsonDocument Attributes { get; set; } = JsonDocument.Parse("{}");
+        public JsonElement? Attributes { get; set; }
 
-        public ICollection<Inventory> InventoryItems { get; set; } = new List<Inventory>();
-
+        public decimal EffectivePrice { get; set; }
+        public int Available { get; set; }
     }
 }
