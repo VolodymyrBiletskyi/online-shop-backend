@@ -19,8 +19,10 @@ namespace api.Mappers
             {
                 Id = Guid.NewGuid(),
                 ProductId = productId,
-                Sku = createVariant.Sku.Trim().ToUpperInvariant(),
                 Title = createVariant.Title,
+                Sku = string.IsNullOrWhiteSpace(createVariant.Sku)
+                    ? SkuGenerator.Generate(createVariant.Title)
+                    : createVariant.Sku.Trim().ToUpperInvariant(),
                 PriceOverride = createVariant.PriceOverride,
                 Weight = createVariant.Weight,
                 Attributes = JsonDocHelper.ParseOrEmpty(createVariant.Attributes)
@@ -29,8 +31,10 @@ namespace api.Mappers
 
         public static void ApplyUpdate(this ProductVariant entity, UpdateVariant updateVariant)
         {
-            entity.Sku = updateVariant.Sku.Trim().ToUpperInvariant();
             entity.Title = updateVariant.Title;
+            entity.Sku = string.IsNullOrWhiteSpace(updateVariant.Sku)
+                    ? SkuGenerator.Generate(updateVariant.Title)
+                    : updateVariant.Sku.Trim().ToUpperInvariant();
             entity.PriceOverride = updateVariant.PriceOverride;
             entity.Weight = updateVariant.Weight;
             entity.Attributes = JsonDocHelper.ParseOrEmpty(updateVariant.Attributes);
@@ -43,6 +47,7 @@ namespace api.Mappers
                 Id = productVariant.Id,
                 ProductId = productVariant.ProductId,
                 Title = productVariant.Title,
+                Sku = productVariant.Sku,
                 PriceOverride = productVariant.PriceOverride,
                 Weight = productVariant.Weight,
                 Attributes = productVariant.Attributes.RootElement.Clone()

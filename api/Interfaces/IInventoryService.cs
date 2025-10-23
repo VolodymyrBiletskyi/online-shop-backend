@@ -10,6 +10,7 @@ namespace api.Interfaces
 {
     public interface IInventoryService
     {
+        Task<IReadOnlyList<InventoryDto>> GetAllAsync();
         Task<InventoryDto> IncreaseOnHandAsync(Guid variantId, ChangeInventory changeInventory);
         Task<InventoryDto> ReserveAsync(Guid variantId, ChangeInventory changeInventory);
         Task<InventoryDto> ReleaseAsync(Guid variantId, ChangeInventory changeInventory);

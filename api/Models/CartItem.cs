@@ -18,5 +18,7 @@ namespace api.Models
 
         public int Quantity { get; set; }
         public decimal UnitPriceSnapshot { get; set; }
+        
+        
     }
 }

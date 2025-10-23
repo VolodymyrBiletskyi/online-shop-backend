@@ -13,8 +13,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251021182224_productfix")]
-    partial class productfix
+    [Migration("20251023085745_config")]
+    partial class config
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,9 +81,10 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
-                    b.ToTable("Cart");
+                    b.ToTable("Cart", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.CartItem", b =>
@@ -112,13 +113,14 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId");
+                    b.HasIndex("CartId")
+                        .IsUnique();
 
                     b.HasIndex("ProductId");
 
                     b.HasIndex("ProductVariantId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.Category", b =>
@@ -145,7 +147,7 @@ namespace api.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.Coupon", b =>
@@ -193,25 +195,22 @@ namespace api.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ProductVariantId")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("QuantityOnHand")
                         .HasColumnType("integer");
 
                     b.Property<int>("QuantityReserved")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("VariantId")
+                    b.Property<Guid>("VariantId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("ProductVariantId");
+                    b.HasIndex("VariantId");
 
-                    b.ToTable("Inventory");
+                    b.ToTable("Inventory", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.Order", b =>
@@ -403,7 +402,10 @@ namespace api.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.ProductImage", b =>
@@ -463,9 +465,10 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId")
+                        .IsUnique();
 
-                    b.ToTable("ProductVariants");
+                    b.ToTable("ProductVariants", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.Shipment", b =>
@@ -511,7 +514,8 @@ namespace api.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -529,7 +533,10 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.UserAddress", b =>
@@ -564,14 +571,15 @@ namespace api.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("Userid")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Userid");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
-                    b.ToTable("UserAddresses");
+                    b.ToTable("UserAddresses", (string)null);
                 });
 
             modelBuilder.Entity("api.Migrations.OrderAddress", b =>
@@ -588,8 +596,8 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Cart", b =>
                 {
                     b.HasOne("api.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithOne("Cart")
+                        .HasForeignKey("api.Models.Cart", "UserId");
 
                     b.Navigation("User");
                 });
@@ -603,7 +611,7 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.HasOne("api.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("Items")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -623,7 +631,8 @@ namespace api.Migrations
                 {
                     b.HasOne("api.Models.Category", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Parent");
                 });
@@ -638,7 +647,9 @@ namespace api.Migrations
 
                     b.HasOne("api.Models.ProductVariant", "ProductVariant")
                         .WithMany("InventoryItems")
-                        .HasForeignKey("ProductVariantId");
+                        .HasForeignKey("VariantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
 
@@ -756,8 +767,8 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.UserAddress", b =>
                 {
                     b.HasOne("api.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("Userid")
+                        .WithOne("Address")
+                        .HasForeignKey("api.Models.UserAddress", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -778,6 +789,8 @@ namespace api.Migrations
                 {
                     b.Navigation("Images");
 
+                    b.Navigation("Items");
+
                     b.Navigation("Variants");
                 });
 
@@ -788,6 +801,10 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.User", b =>
                 {
+                    b.Navigation("Address");
+
+                    b.Navigation("Cart");
+
                     b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618

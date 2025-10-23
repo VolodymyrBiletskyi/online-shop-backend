@@ -42,7 +42,7 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        public async Task<ActionResult> Delete([FromRoute] Guid id)
         {
             var delete = await _variantService.DeleteAsync(id);
 
