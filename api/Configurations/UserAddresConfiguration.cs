@@ -17,8 +17,8 @@ namespace api.Configurations
             builder.HasKey(x => x.Id);
 
             builder.HasOne(a => a.User)
-                .WithOne(a => a.Address)
-                .HasForeignKey<UserAddress>(a => a.UserId);
+                .WithMany(a => a.Addres)
+                .HasForeignKey(a => a.UserId);
 
             builder.HasIndex(a => a.UserId).IsUnique();
         }

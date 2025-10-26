@@ -11,7 +11,6 @@ namespace api.Models
 
 
         public Cart? Cart { get; set; }
-        public UserAddress? Address { get; set; }
         public string Email { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
         public string FullName { get; set; } = null!;
@@ -20,6 +19,7 @@ namespace api.Models
         public DateTime? CreatedAt { get; set; }
 
         public ICollection<Order> Orders { get; set; } = new List<Order>();
+        public ICollection<UserAddress> Addres { get; set; } = new List<UserAddress>();
     }
     public enum UserRole
     {

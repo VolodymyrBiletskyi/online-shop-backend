@@ -20,6 +20,7 @@ namespace api.Models
         public JsonDocument Attributes { get; set; } = JsonDocument.Parse("{}");
 
         public ICollection<Inventory> InventoryItems { get; set; } = new List<Inventory>();
+        public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
 
     }
 }

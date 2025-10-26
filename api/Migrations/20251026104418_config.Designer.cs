@@ -13,7 +13,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251023085745_config")]
+    [Migration("20251026104418_config")]
     partial class config
     {
         /// <inheritdoc />
@@ -56,9 +56,10 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderId")
+                        .IsUnique();
 
-                    b.ToTable("OrderAdresses");
+                    b.ToTable("OrderAdresses", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.Cart", b =>
@@ -219,6 +220,9 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime?>("CancelledAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -226,8 +230,14 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("DisscountAmount")
-                        .HasColumnType("integer");
+                    b.Property<DateTime?>("DeliveredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("OrderAddressId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("OrderNumber")
                         .IsRequired()
@@ -236,20 +246,26 @@ namespace api.Migrations
                     b.Property<DateTime?>("PaidAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Ship_amount")
+                    b.Property<int>("PaymentStatus")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("ShipAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("ShippedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SubtotalAmount")
-                        .HasColumnType("integer");
+                    b.Property<decimal>("SubtotalAmount")
+                        .HasColumnType("numeric");
 
-                    b.Property<int>("TaxAmount")
-                        .HasColumnType("integer");
+                    b.Property<decimal>("TaxAmount")
+                        .HasColumnType("numeric");
 
-                    b.Property<int>("Total_amount")
-                        .HasColumnType("integer");
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("numeric");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -258,34 +274,37 @@ namespace api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.OrderDiscount", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CouponId")
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<Guid?>("CouponId")
-                        .HasColumnType("uuid");
+                    b.Property<decimal>("AppliedAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("AppliedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("OrderId")
+                    b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
+                    b.HasKey("OrderId", "CouponId");
 
                     b.HasIndex("CouponId");
 
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderDiscounts");
+                    b.ToTable("OrderDiscounts", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.OrderItem", b =>
@@ -294,17 +313,17 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("AttributesSnapshot")
+                        .HasColumnType("text");
 
-                    b.Property<Guid>("ProductId")
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("ProductNameSnapshot")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("ProductVariantId")
+                    b.Property<Guid>("ProductVariantId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Quantity")
@@ -320,18 +339,18 @@ namespace api.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("numeric");
 
-                    b.Property<Guid?>("VariantId")
+                    b.Property<Guid>("VariantId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ProductId");
-
                     b.HasIndex("ProductVariantId");
 
-                    b.ToTable("OrderItems");
+                    b.HasIndex("VariantId");
+
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.Payment", b =>
@@ -343,8 +362,21 @@ namespace api.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
+                    b.Property<DateTime?>("CancelledAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FailureReason")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Method")
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
@@ -353,8 +385,14 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ProviderId")
+                        .HasColumnType("text");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime?>("SucceededAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("TrasnsactionId")
                         .HasColumnType("text");
@@ -363,7 +401,12 @@ namespace api.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Payments");
+                    b.HasIndex("ProviderId");
+
+                    b.HasIndex("Provider", "ProviderId")
+                        .IsUnique();
+
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.Product", b =>
@@ -423,6 +466,9 @@ namespace api.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("ProductVariantId")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("SortOrder")
                         .HasColumnType("integer");
 
@@ -432,9 +478,13 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductVariantId");
 
-                    b.ToTable("ProductImages");
+                    b.HasIndex("ProductId", "IsPrimary")
+                        .IsUnique()
+                        .HasFilter("\"ProductVariantId\"  IS NOT NULL AND \"IsPrimary\" = true");
+
+                    b.ToTable("ProductImages", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.ProductVariant", b =>
@@ -471,6 +521,43 @@ namespace api.Migrations
                     b.ToTable("ProductVariants", (string)null);
                 });
 
+            modelBuilder.Entity("api.Models.Refund", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("PaymentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ProviderRefunId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("RefundStatus")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaymentId");
+
+                    b.HasIndex("ProviderRefunId");
+
+                    b.ToTable("Refunds", (string)null);
+                });
+
             modelBuilder.Entity("api.Models.Shipment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -500,7 +587,7 @@ namespace api.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Shipments");
+                    b.ToTable("Shipments", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.User", b =>
@@ -585,8 +672,8 @@ namespace api.Migrations
             modelBuilder.Entity("api.Migrations.OrderAddress", b =>
                 {
                     b.HasOne("api.Models.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
+                        .WithOne("OrderAddress")
+                        .HasForeignKey("api.Migrations.OrderAddress", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -670,11 +757,13 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.OrderDiscount", b =>
                 {
                     b.HasOne("api.Models.Coupon", "Coupon")
-                        .WithMany()
-                        .HasForeignKey("CouponId");
+                        .WithMany("OrderDiscount")
+                        .HasForeignKey("CouponId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("api.Models.Order", "Order")
-                        .WithMany()
+                        .WithMany("OrderDiscount")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -687,24 +776,18 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.OrderItem", b =>
                 {
                     b.HasOne("api.Models.Order", "Order")
-                        .WithMany()
+                        .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("api.Models.ProductVariant", "ProductVariant")
                         .WithMany()
-                        .HasForeignKey("ProductVariantId");
+                        .HasForeignKey("ProductVariantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Order");
-
-                    b.Navigation("Product");
 
                     b.Navigation("ProductVariant");
                 });
@@ -712,7 +795,7 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Payment", b =>
                 {
                     b.HasOne("api.Models.Order", "Order")
-                        .WithMany()
+                        .WithMany("Payments")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -739,7 +822,13 @@ namespace api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("api.Models.ProductVariant", "ProductVariant")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductVariantId");
+
                     b.Navigation("Product");
+
+                    b.Navigation("ProductVariant");
                 });
 
             modelBuilder.Entity("api.Models.ProductVariant", b =>
@@ -753,10 +842,21 @@ namespace api.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("api.Models.Refund", b =>
+                {
+                    b.HasOne("api.Models.Payment", "Payment")
+                        .WithMany("Refund")
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Payment");
+                });
+
             modelBuilder.Entity("api.Models.Shipment", b =>
                 {
                     b.HasOne("api.Models.Order", "Order")
-                        .WithMany()
+                        .WithMany("Shipments")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -767,8 +867,8 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.UserAddress", b =>
                 {
                     b.HasOne("api.Models.User", "User")
-                        .WithOne("Address")
-                        .HasForeignKey("api.Models.UserAddress", "UserId")
+                        .WithMany("Addres")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -785,6 +885,30 @@ namespace api.Migrations
                     b.Navigation("Children");
                 });
 
+            modelBuilder.Entity("api.Models.Coupon", b =>
+                {
+                    b.Navigation("OrderDiscount");
+                });
+
+            modelBuilder.Entity("api.Models.Order", b =>
+                {
+                    b.Navigation("OrderAddress")
+                        .IsRequired();
+
+                    b.Navigation("OrderDiscount");
+
+                    b.Navigation("OrderItems");
+
+                    b.Navigation("Payments");
+
+                    b.Navigation("Shipments");
+                });
+
+            modelBuilder.Entity("api.Models.Payment", b =>
+                {
+                    b.Navigation("Refund");
+                });
+
             modelBuilder.Entity("api.Models.Product", b =>
                 {
                     b.Navigation("Images");
@@ -796,12 +920,14 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.ProductVariant", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("InventoryItems");
                 });
 
             modelBuilder.Entity("api.Models.User", b =>
                 {
-                    b.Navigation("Address");
+                    b.Navigation("Addres");
 
                     b.Navigation("Cart");
 

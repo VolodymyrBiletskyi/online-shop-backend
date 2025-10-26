@@ -17,5 +17,8 @@ namespace api.Models
         public int SortOrder { get; set; } = 0;
         public bool IsPrimary { get; set; } = false;
 
+        public Guid? ProductVariantId { get; set; }
+        public ProductVariant? ProductVariant { get; set; }
+
     }
 }

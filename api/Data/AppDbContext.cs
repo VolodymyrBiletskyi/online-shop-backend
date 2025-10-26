@@ -35,5 +35,6 @@ namespace api.Data
         public DbSet<OrderAddress> OrderAdresses { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<OrderDiscount> OrderDiscounts { get; set; }
+        public DbSet<Refund> Refunds { get; set; }
     }
 }

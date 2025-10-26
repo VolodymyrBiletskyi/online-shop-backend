@@ -18,6 +18,8 @@ namespace api.Models
         public int UsedCount { get; set; } = 0;
         public bool IsActive { get; set; } = true;
 
+        public ICollection<OrderDiscount> OrderDiscount { get; set; } = new List<OrderDiscount>();
+
     }
     
     public enum CouponType
