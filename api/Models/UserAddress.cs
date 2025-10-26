@@ -9,7 +9,7 @@ namespace api.Models
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public Guid Userid { get; set; }
+        public Guid UserId { get; set; }
         public User User { get; set; } = null!;
 
         public UserAddresType Type { get; set; } = UserAddresType.Shipping;

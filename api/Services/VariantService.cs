@@ -9,6 +9,7 @@ using api.Models;
 using System.Text.Json;
 using api.Dto;
 using Humanizer;
+using api.Extensions;
 
 namespace api.Services
 {
@@ -31,10 +32,10 @@ namespace api.Services
             var product = await _productRepo.GetByIdAsync(productId)
                 ?? throw new ArgumentException("Product don't found");
 
-            if (await _variantRepo.SkuExistsAsync(createVariant.Sku))
-                throw new InvalidOperationException("SKU already exists");
-
             var variant = VariantMapper.ToEntity(createVariant, productId);
+ 
+            if (await _variantRepo.SkuExistsAsync(createVariant.Sku))
+                variant.Sku = SkuGenerator.Generate(createVariant.Title);            
 
             await _variantRepo.CreateAsync(variant);
             await _variantRepo.SaveChangesAsync();
@@ -102,6 +103,7 @@ namespace api.Services
         {
             var variant = await _variantRepo.GetByIdAsync(id);
             if (variant == null) return false;
+            await _variantRepo.DeleteAsync(id);
             return true;
             
         }

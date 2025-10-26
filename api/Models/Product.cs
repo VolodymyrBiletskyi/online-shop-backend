@@ -23,5 +23,6 @@ namespace api.Models
 
         public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
         public ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
+        public ICollection<CartItem> Items { get; set; } = new List<CartItem>();
     }
 }

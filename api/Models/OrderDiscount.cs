@@ -16,5 +16,8 @@ namespace api.Models
 
         public string? Description { get; set; }
         public decimal Amount { get; set; } 
+
+        public decimal AppliedAmount { get; set; }
+        public DateTime AppliedAt { get; set; } = DateTime.UtcNow;
     }
 }

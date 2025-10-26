@@ -11,13 +11,13 @@ namespace api.Models
 
         public Guid OrderId { get; set; }
         public Order Order { get; set; } = null!;
-        public Guid ProductId { get; set; }
-        public Product Product { get; set; } = null!;
-        public Guid? VariantId { get; set; }
-        public ProductVariant? ProductVariant { get; set; }
+        public Guid VariantId { get; set; }
+        public ProductVariant ProductVariant { get; set; } = null!;
         
         public string ProductNameSnapshot { get; set; } = null!;
         public string SkuSnapshot { get; set; } = null!;
+        public string? AttributesSnapshot { get; set; }
+
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
         public decimal TotalLine { get; set; }

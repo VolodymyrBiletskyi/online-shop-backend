@@ -9,7 +9,7 @@ namespace api.Dto
     {
         public Guid Id { get; set; }
 
-        public Guid? VariantId { get; set; }
+        public Guid VariantId { get; set; }
         public int QuantityOnHand { get; set; } 
         public int QuantityReserved { get; set; }
         public int Available => QuantityOnHand - QuantityReserved;

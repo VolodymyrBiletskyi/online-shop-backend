@@ -23,12 +23,15 @@ namespace api.Repository
             return _dbcontext.AddAsync(entity).AsTask();
         }
 
-        public Task<ProductVariant?> DeleteAsync(Guid id)
+        public async Task<ProductVariant?> DeleteAsync(Guid id)
         {
-            var productVariantModel = _dbcontext.ProductVariants.FirstOrDefaultAsync(x => x.Id == id);
+            var productVariantModel = await _dbcontext.ProductVariants.FirstOrDefaultAsync(x => x.Id == id);
+
             if (productVariantModel == null) return null;
-            _dbcontext.Remove(productVariantModel);
-            _dbcontext.SaveChangesAsync();
+
+            _dbcontext.ProductVariants.Remove(productVariantModel);
+            await _dbcontext.SaveChangesAsync();
+            
             return productVariantModel;
         }
 

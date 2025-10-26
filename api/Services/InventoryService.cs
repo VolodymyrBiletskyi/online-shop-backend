@@ -45,6 +45,11 @@ namespace api.Services
                 
         }
 
+        public async Task<IReadOnlyList<InventoryDto>> GetAllAsync()
+        {
+            var getInventory = await _inventoryRepo.GetAllAsync();
+            return getInventory.Select(InventoryMapper.ToDto).ToList();
+        }
 
         public async Task<InventoryDto> IncreaseOnHandAsync(Guid variantId, ChangeInventory changeInventory)
         {

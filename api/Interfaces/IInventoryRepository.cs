@@ -8,6 +8,7 @@ namespace api.Interfaces
 {
     public interface IInventoryRepository
     {
+        Task<IReadOnlyList<Inventory>> GetAllAsync();
         Task CreateAsync(Inventory entity);
         Task<Inventory?> GetByIdAsync(Guid id);
         Task<Inventory?> GetByVariantAsync(Guid variantId);

@@ -30,6 +30,13 @@ namespace api.Repository
             return inventoryModel;
         }
 
+        public async Task<IReadOnlyList<Inventory>> GetAllAsync()
+        {
+            return await _dbContext.Inventory
+            .AsNoTracking()
+            .ToListAsync();
+        }
+
         public Task<Inventory?> GetByIdAsync(Guid id)
         {
             return _dbContext.Inventory.FirstOrDefaultAsync(x => x.Id == id);

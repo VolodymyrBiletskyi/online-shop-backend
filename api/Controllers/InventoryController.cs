@@ -20,6 +20,13 @@ namespace api.Controllers
             _inentoryService = inventoryService;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyList<InventoryDto>>> GetAll()
+        {
+            var inventory = await _inentoryService.GetAllAsync();
+            return Ok(inventory);
+        }
+
         [HttpPost("increase")]
         public Task<InventoryDto> Increase(Guid variantId, [FromBody] ChangeInventory dto)
         {
