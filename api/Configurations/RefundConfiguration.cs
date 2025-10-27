@@ -22,7 +22,7 @@ namespace api.Configurations
                 .HasForeignKey(a => a.PaymentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasIndex(a => a.ProviderRefunId).IsUnique(false);
+            builder.HasIndex(a => a.ProviderRefundId).IsUnique(false);
         }
     }
 }

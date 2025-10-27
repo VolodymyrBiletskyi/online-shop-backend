@@ -16,7 +16,7 @@ namespace api.Models
         public string Currency { get; set; } = "USD";
         public RefundStatus RefundStatus { get; set; }
 
-        public string? ProviderRefunId { get; set; }
+        public string? ProviderRefundId { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? CompletedAt { get; set; }
     }

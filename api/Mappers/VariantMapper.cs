@@ -25,7 +25,7 @@ namespace api.Mappers
                     : createVariant.Sku.Trim().ToUpperInvariant(),
                 PriceOverride = createVariant.PriceOverride,
                 Weight = createVariant.Weight,
-                Attributes = JsonDocHelper.ParseOrEmpty(createVariant.Attributes)
+                Attributes = createVariant.Attributes ?? new()
             };
         }
 
@@ -37,7 +37,7 @@ namespace api.Mappers
                     : updateVariant.Sku.Trim().ToUpperInvariant();
             entity.PriceOverride = updateVariant.PriceOverride;
             entity.Weight = updateVariant.Weight;
-            entity.Attributes = JsonDocHelper.ParseOrEmpty(updateVariant.Attributes);
+            entity.Attributes = updateVariant.Attributes;
                 
         }
         public static ProductVariantDto ToDto(this ProductVariant productVariant)
@@ -50,14 +50,14 @@ namespace api.Mappers
                 Sku = productVariant.Sku,
                 PriceOverride = productVariant.PriceOverride,
                 Weight = productVariant.Weight,
-                Attributes = productVariant.Attributes.RootElement.Clone()
+                Attributes = productVariant.Attributes
             };
         }
 
         public static ProductVariantDto ToDtoWithAggregates(this ProductVariant v)
         {
             var dto = v.ToDto();
-            var basePrice = v.Products.BasePrice; 
+            var basePrice = v.Product.BasePrice; 
             var available = v.InventoryItems.Sum(i => i.QuantityOnHand - i.QuantityReserved);
             dto.EffectivePrice = v.PriceOverride ?? basePrice;
             dto.Available = available;

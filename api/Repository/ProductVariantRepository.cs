@@ -51,7 +51,7 @@ namespace api.Repository
 
         public Task<ProductVariant?> GetByIdAsync(Guid id)
         {
-            return _dbcontext.ProductVariants.Include(v => v.Products)
+            return _dbcontext.ProductVariants.Include(v => v.Product)
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
 
@@ -59,7 +59,6 @@ namespace api.Repository
         {
             return _dbcontext.ProductVariants.Where(v => v.ProductId == productId).ToListAsync()
                 .ContinueWith(t => (IReadOnlyList<ProductVariant>) t.Result);
-
         }
 
         public Task<ProductVariant?> GetBySkuAsync(string sku)
@@ -70,7 +69,7 @@ namespace api.Repository
         public Task<ProductVariant?> GetWithPRoductsAndInventoryAsync(Guid id)
         {
             return _dbcontext.ProductVariants
-                .Include(v => v.Products)
+                .Include(v => v.Product)
                 .Include(v => v.InventoryItems)
                 .SingleOrDefaultAsync(v => v.Id == id);
         }

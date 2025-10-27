@@ -21,7 +21,7 @@ namespace api.Configurations
                 .HasForeignKey(a => a.CartId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasIndex(a => a.CartId).IsUnique();
+            builder.HasIndex(a => a.CartId);
         }
     }
 }

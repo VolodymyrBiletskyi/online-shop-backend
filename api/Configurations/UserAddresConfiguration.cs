@@ -20,7 +20,7 @@ namespace api.Configurations
                 .WithMany(a => a.Addres)
                 .HasForeignKey(a => a.UserId);
 
-            builder.HasIndex(a => a.UserId).IsUnique();
+            builder.HasIndex(a => a.UserId);
         }
     }
 }

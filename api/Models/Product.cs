@@ -13,7 +13,7 @@ namespace api.Models
         public Category Category { get; set; } = null!;
 
         public string Name { get; set; } = null!;
-        public string Slug { get; set; } = null!;
+        public string Slug { get; set; } = string.Empty;
         public string? Description { get; set; }
         public int SortOrder { get; set; }
 

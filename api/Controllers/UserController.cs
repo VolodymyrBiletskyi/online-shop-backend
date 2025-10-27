@@ -75,11 +75,10 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<ActionResult> Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var deleted = await _userService.DeleteAsync(id);
-            if (!deleted) return NotFound("User don't found");
-            return Ok(new {message = "User deleted successfully"});
+            return deleted ? NoContent() : NotFound();
         }
         
     }

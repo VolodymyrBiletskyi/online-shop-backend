@@ -15,8 +15,13 @@ builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 
+var cs = builder.Configuration.GetConnectionString("DefaultConnection");
+var dsBuilder = new Npgsql.NpgsqlDataSourceBuilder(cs);
+dsBuilder.EnableDynamicJson();
+var dataSource = dsBuilder.Build();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(dataSource));
 
 // DI
 builder.Services.AddScoped<IUserRepository, UserRepository>();
