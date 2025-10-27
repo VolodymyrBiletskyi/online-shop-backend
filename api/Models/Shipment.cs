@@ -20,13 +20,7 @@ namespace api.Models
 
 
     }
-    public enum ShipmentStatus
-    {
-        Pending = 0,
-        Shipped = 1,
-        Delivered = 2,
-        Returned = 3
-    }
+    public enum ShipmentStatus {Pending = 0,   Shipped = 1, Delivered = 2,Returned = 3}
 
 
 }

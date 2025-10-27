@@ -28,33 +28,38 @@ namespace api.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public Task<ProductVariantDto> GetVariantById(Guid id)
+        public async Task<ActionResult<ProductVariantDto>> GetVariantById(Guid id)
         {
-            var variant = _variantService.GetById(id);
-            return variant;
+            var variant = await _variantService.GetById(id);
+            return variant is null ? NotFound() : Ok(variant);
         }
 
         [HttpPut("{id:guid}")]
-        public Task<ProductVariantDto> UpdateVariant(Guid id, [FromBody] UpdateVariant updateVariant)
+        public async Task<ActionResult<ProductVariantDto>> UpdateVariant(Guid id, [FromBody] UpdateVariant updateVariant)
         {
-            var update = _variantService.UpdateAsync(id, updateVariant);
-            return update;
+            var update = await _variantService.UpdateAsync(id, updateVariant);
+            return update is null ? NotFound() : Ok(update);
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<ActionResult> Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var delete = await _variantService.DeleteAsync(id);
-
-            if (!delete) return NotFound("Variant don't found");
-            return Ok(new { message = "Variant deleted successfully" });
+            var deleted = await _variantService.DeleteAsync(id);
+            return deleted ? NoContent() : NotFound();
         }
 
-        [HttpPost("{productId:guid}")]
-        public Task<ProductVariantDto> CreateVariant (Guid productId,[FromBody] CreateVariant createVariant)
+        [HttpPost("~/api/products/{productId:guid}/variants")]
+        public async Task<ActionResult<ProductVariantDto>> CreateVariant(Guid productId, [FromBody] CreateVariant createVariant)
         {
-            var create = _variantService.CreateForProductAsync(productId, createVariant);
-            return create;
+            var create = await _variantService.CreateForProductAsync(productId, createVariant);
+            return CreatedAtAction(nameof(GetVariantById), new { id = create.Id }, create);
+        }
+
+        [HttpGet("~/api/products/{productId:guid}/variants")]
+        public async Task<ActionResult<IReadOnlyList<ProductVariantDto>>> GetVariantsByProductId(Guid productId)
+        {
+            var productVariants = await _variantService.GetVariantsByProductIdAsync(productId);
+            return productVariants is null ? NotFound() : Ok(productVariants);
         }
     }
 }

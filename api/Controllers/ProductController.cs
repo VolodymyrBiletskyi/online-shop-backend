@@ -16,12 +16,10 @@ namespace api.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-        private readonly IVariantService _variantService;
 
-        public ProductController(IProductService productService,IVariantService variantService)
+        public ProductController(IProductService productService)
         {
             _productService = productService;
-            _variantService = variantService;
         }
 
         [HttpGet]
@@ -37,26 +35,26 @@ namespace api.Controllers
             return product is null ? NotFound() : Ok(product);
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<ActionResult<ProductDto>> Create([FromBody] CreateProduct createProduct)
         {
             var created = await _productService.CreateAsync(createProduct);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
+
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<ProductDto>> Update(Guid id, [FromBody] UpdateProductRequest updateProduct)
         {
             var update = await _productService.UpdateAsync(id, updateProduct);
-            return Ok(update);
+            return update is null ? NotFound() : Ok(update);
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<ActionResult> Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var deleted = await _productService.DeleteAsync(id);
-            if (!deleted) return NotFound("Product dont't found");
-            return Ok(new { message = "Product deleted successfully" });
+            return deleted ? NoContent() : NotFound();
         }
 
         

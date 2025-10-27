@@ -44,7 +44,7 @@ namespace api.Services
             {
                 ProductId = product.Id,
                 VariantId = variant.Id,
-                QuantityOnHand = createVariant.InitAvaliable,
+                QuantityOnHand = createVariant.InitAvailable,
                 QuantityReserved = 0
             };
 
@@ -112,7 +112,12 @@ namespace api.Services
         {
             var variants = await _variantRepo.GetAllAsync();
             return variants.Select(VariantMapper.ToDto).ToList();
-                
+        }
+
+        public async Task<IReadOnlyList<ProductVariantDto>> GetVariantsByProductIdAsync(Guid productId)
+        {
+            var productVariants = await _variantRepo.GetByProductAsync(productId);
+            return productVariants.Select(VariantMapper.ToDto).ToList();
         }
     }
 }

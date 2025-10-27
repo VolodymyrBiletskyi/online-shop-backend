@@ -16,11 +16,15 @@ namespace api.Configurations
 
             builder.HasKey(x => x.Id);
 
-            builder.HasOne(a => a.Products)
+            builder.HasOne(a => a.Product)
                 .WithMany(a => a.Variants)
                 .HasForeignKey(a => a.ProductId);
 
-            builder.HasIndex(a => a.ProductId).IsUnique();
+            builder.Property(a => a.Attributes)
+                .HasColumnType("jsonb")
+                .HasDefaultValueSql("'{}'::jsonb");
+
+            
         }
     }
 }

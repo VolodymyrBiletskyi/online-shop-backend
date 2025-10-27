@@ -17,11 +17,14 @@ namespace api.Configurations
 
             builder.HasOne(a => a.Product)
                 .WithMany(a => a.Images)
-                .HasForeignKey(a => a.ProductId);
+                .HasForeignKey(a => a.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(a => a.ProductVariant)
                 .WithMany(a => a.Images)
-                .HasForeignKey(a => a.ProductVariantId);
+                .HasForeignKey(a => a.ProductVariantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
 
             builder.HasIndex(x => new { x.ProductId, x.IsPrimary })
                 .HasFilter("\"IsPrimary\" = true")

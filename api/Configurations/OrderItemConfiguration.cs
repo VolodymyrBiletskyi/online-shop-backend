@@ -20,6 +20,11 @@ namespace api.Configurations
                 .WithMany(a => a.OrderItems)
                 .HasForeignKey(a => a.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
+            
+            builder.HasOne(a => a.ProductVariant)
+                .WithMany(a => a.OrderItem)
+                .HasForeignKey(a => a.VariantId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasIndex(a => a.OrderId);
             builder.HasIndex(a => a.VariantId);

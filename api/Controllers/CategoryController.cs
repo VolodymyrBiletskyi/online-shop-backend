@@ -48,11 +48,10 @@ namespace api.Controllers
         }
         
         [HttpDelete("{id:guid}")]
-        public async Task<ActionResult> Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var deleted = await _categoryService.DeleteAsync(id);
-            if (!deleted) return NotFound("Category not found");
-            return Ok(new { message = "Category deleted successfully" });
+            return deleted ? NoContent() : NotFound();
         }
     }
 }

@@ -20,6 +20,8 @@ namespace api.Configurations
                 .WithMany(a => a.InventoryItems)
                 .HasForeignKey(a => a.VariantId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasIndex(a => a.VariantId).IsUnique();
         }
     }
 }
