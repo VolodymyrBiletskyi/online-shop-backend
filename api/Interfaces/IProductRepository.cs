@@ -16,5 +16,7 @@ namespace api.Interfaces
         Task<Product?> GetWithVariantsAsync(Guid id);
         Task<Product?> GetBySlugAsync(string slug);
         Task<bool> SlugExistsAsync(string slug);
+        Task<ProductVariant?> GetVariantAsync(Guid variantId);
+        Task<decimal> GetPriceSnapshotAsync(Guid productId,Guid? variantId);
     }
 }

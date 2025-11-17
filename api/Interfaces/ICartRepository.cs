@@ -13,8 +13,8 @@ namespace api.Interfaces
         // Task<CartItem?> GetItemAsync(Guid itemId, Guid productId, Guid? variantId); 
         Task<CartItem?> GetByIdAsync(Guid itemId);
         Task AddAsync(CartItem item);
-        Task<CartItem> RemoveAsync(Guid itemId);
-        Task<Cart> ClearCartAsync(Guid id);
+        Task<CartItem> RemoveItemAsync(Guid itemId);
+        Task<Cart> ClearCartAsync(Guid cartId);
         Task<int> SaveChangesAsync();
 
     }

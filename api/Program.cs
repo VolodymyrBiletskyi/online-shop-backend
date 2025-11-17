@@ -35,6 +35,7 @@ builder.Services.AddScoped<IVariantService, VariantService>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<ICartRepository,CartRepository>();
+builder.Services.AddScoped<ICartService,CartService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IUserValidator, UserValidator>();
 builder.Services.AddScoped<IProductValidator, ProductValidator>();

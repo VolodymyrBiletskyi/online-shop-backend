@@ -21,11 +21,11 @@ namespace api.Repository
             return _dbContext.CartItems.AddAsync(item).AsTask();
         }
 
-        public async Task<Cart> ClearCartAsync(Guid id)
+        public async Task<Cart> ClearCartAsync(Guid cartId)
         {
             var cart = await _dbContext.Cart
                 .Include(c => c.Items)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == cartId);
 
             if (cart is null)
                 throw new InvalidOperationException("Cart not found");
@@ -62,7 +62,7 @@ namespace api.Repository
         //             i.VariantId == variantId);
         // }
 
-        public async Task<CartItem?> RemoveAsync(Guid itemId)
+        public async Task<CartItem?> RemoveItemAsync(Guid itemId)
         {
             var item = await GetByIdAsync(itemId);
 
