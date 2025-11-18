@@ -13,7 +13,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251027203752_config")]
+    [Migration("20251118134409_config")]
     partial class config
     {
         /// <inheritdoc />
