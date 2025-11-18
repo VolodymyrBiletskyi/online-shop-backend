@@ -30,7 +30,8 @@ namespace api.Services
                 {
                     UserId = userId,
                     CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    UpdatedAt = DateTime.UtcNow,
+                    Items = new List<CartItem>()
                 };  
                 await _cartRepo.CreateAsync(cart);
                 await _cartRepo.SaveChangesAsync();
@@ -73,7 +74,9 @@ namespace api.Services
             
             await _cartRepo.SaveChangesAsync();
 
-            return cart.ToDto();
+            var updatedCart = await _cartRepo.GetActiveCartByUserAsync(userId);
+
+            return updatedCart!.ToDto();
         }
 
         public async Task<CartDto> ClearCartAsync(Guid userId)

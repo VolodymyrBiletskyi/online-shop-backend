@@ -97,9 +97,6 @@ namespace api.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ProductVariantId")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
@@ -115,7 +112,7 @@ namespace api.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("ProductVariantId");
+                    b.HasIndex("VariantId");
 
                     b.ToTable("CartItems", (string)null);
                 });
@@ -700,7 +697,7 @@ namespace api.Migrations
 
                     b.HasOne("api.Models.ProductVariant", "ProductVariant")
                         .WithMany()
-                        .HasForeignKey("ProductVariantId");
+                        .HasForeignKey("VariantId");
 
                     b.Navigation("Cart");
 

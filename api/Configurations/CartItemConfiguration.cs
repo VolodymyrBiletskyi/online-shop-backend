@@ -22,6 +22,18 @@ namespace api.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasIndex(a => a.CartId);
+
+            builder.HasOne(x => x.Product)
+                .WithMany()
+                .HasForeignKey(x => x.ProductId);
+
+            builder.HasIndex(x => x.VariantId);
+
+            builder.HasOne(x => x.ProductVariant)
+                .WithMany()
+                .HasForeignKey(x => x.VariantId);
+
+            builder.HasIndex(x => x.VariantId);
         }
     }
 }

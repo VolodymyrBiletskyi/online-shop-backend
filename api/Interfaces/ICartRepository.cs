@@ -10,7 +10,6 @@ namespace api.Interfaces
     {
         Task<Cart?> GetActiveCartByUserAsync(Guid userId);
         Task CreateAsync(Cart entity);
-        // Task<CartItem?> GetItemAsync(Guid itemId, Guid productId, Guid? variantId); 
         Task<CartItem?> GetByIdAsync(Guid itemId);
         Task AddAsync(CartItem item);
         Task<CartItem> RemoveItemAsync(Guid itemId);

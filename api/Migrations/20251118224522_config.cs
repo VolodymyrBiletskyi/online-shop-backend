@@ -14,6 +14,10 @@ namespace api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
+                name: "FK_CartItems_ProductVariants_ProductVariantId",
+                table: "CartItems");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_Categories_Categories_ParentId",
                 table: "Categories");
 
@@ -70,6 +74,10 @@ namespace api.Migrations
                 table: "Inventory");
 
             migrationBuilder.DropIndex(
+                name: "IX_CartItems_ProductVariantId",
+                table: "CartItems");
+
+            migrationBuilder.DropIndex(
                 name: "IX_Cart_UserId",
                 table: "Cart");
 
@@ -92,6 +100,10 @@ namespace api.Migrations
             migrationBuilder.DropColumn(
                 name: "ProductVariantId",
                 table: "Inventory");
+
+            migrationBuilder.DropColumn(
+                name: "ProductVariantId",
+                table: "CartItems");
 
             migrationBuilder.RenameColumn(
                 name: "Userid",
@@ -376,6 +388,11 @@ namespace api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartItems_VariantId",
+                table: "CartItems",
+                column: "VariantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cart_UserId",
                 table: "Cart",
                 column: "UserId",
@@ -390,6 +407,13 @@ namespace api.Migrations
                 name: "IX_Refunds_ProviderRefundId",
                 table: "Refunds",
                 column: "ProviderRefundId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CartItems_ProductVariants_VariantId",
+                table: "CartItems",
+                column: "VariantId",
+                principalTable: "ProductVariants",
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Categories_Categories_ParentId",
@@ -451,6 +475,10 @@ namespace api.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_CartItems_ProductVariants_VariantId",
+                table: "CartItems");
+
             migrationBuilder.DropForeignKey(
                 name: "FK_Categories_Categories_ParentId",
                 table: "Categories");
@@ -521,6 +549,10 @@ namespace api.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_Inventory_VariantId",
                 table: "Inventory");
+
+            migrationBuilder.DropIndex(
+                name: "IX_CartItems_VariantId",
+                table: "CartItems");
 
             migrationBuilder.DropIndex(
                 name: "IX_Cart_UserId",
@@ -709,6 +741,12 @@ namespace api.Migrations
                 type: "uuid",
                 nullable: true);
 
+            migrationBuilder.AddColumn<Guid>(
+                name: "ProductVariantId",
+                table: "CartItems",
+                type: "uuid",
+                nullable: true);
+
             migrationBuilder.AddPrimaryKey(
                 name: "PK_OrderDiscounts",
                 table: "OrderDiscounts",
@@ -745,9 +783,21 @@ namespace api.Migrations
                 column: "ProductVariantId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartItems_ProductVariantId",
+                table: "CartItems",
+                column: "ProductVariantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cart_UserId",
                 table: "Cart",
                 column: "UserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CartItems_ProductVariants_ProductVariantId",
+                table: "CartItems",
+                column: "ProductVariantId",
+                principalTable: "ProductVariants",
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Categories_Categories_ParentId",
