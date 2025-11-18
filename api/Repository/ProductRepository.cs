@@ -68,5 +68,35 @@ namespace api.Repository
         {
             return _dbContext.Products.AnyAsync(p => p.Slug == slug);
         }
+
+        public Task<ProductVariant?> GetVariantAsync(Guid variantId)
+        {
+            return _dbContext.ProductVariants.FirstOrDefaultAsync(v => v.Id == variantId);
+        }
+
+        public async Task<decimal> GetPriceSnapshotAsync(Guid productId, Guid? variantId)
+        {
+            if (variantId != null)
+            {
+                var variantPrice = await _dbContext.ProductVariants
+                    .Where(v => v.Id == variantId)
+                    .Select(v => v.PriceOverride)
+                    .FirstOrDefaultAsync();
+
+                if(variantPrice != default)
+                {
+                    return variantPrice.Value;
+                }
+            }
+            var productPrice = await _dbContext.Products
+                .Where(p => p.Id == productId)
+                .Select(p => p.BasePrice)
+                .FirstOrDefaultAsync();
+
+            if(productPrice == default)
+                throw new InvalidOperationException("Product does not exist");
+
+            return productPrice;
+        }
     }
 }
