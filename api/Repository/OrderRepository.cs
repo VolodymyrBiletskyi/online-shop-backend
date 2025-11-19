@@ -18,9 +18,9 @@ namespace api.Repository
             _dbContext = dbContext;
         }
 
-        public Task AddItemAsync(Guid orderId, OrderItem item)
+        public Task AddItemAsync(OrderItem item)
         {
-            throw new NotImplementedException();
+            return _dbContext.OrderItems.AddAsync(item).AsTask();
         }
 
         public Task CreateAsync(Order order)
@@ -28,14 +28,14 @@ namespace api.Repository
             return _dbContext.Orders.AddAsync(order).AsTask();
         }
 
-        public Task DeleteAsync(Guid orderId)
+        public async Task<Order?> DeleteAsync(Guid orderId)
         {
-            throw new NotImplementedException();
-        }
+            var order = await GetByIdAsync(orderId);
+            if(order == null) return null;
 
-        public Task<Order?> GetActiveOrderAsync(Guid userId)
-        {
-            throw new NotImplementedException();
+            _dbContext.Orders.Remove(order);
+            await SaveChangesAsync();
+            return order;
         }
 
         public async Task<Order?> GetByIdAsync(Guid orderId)
@@ -48,9 +48,11 @@ namespace api.Repository
             return await _dbContext.OrderItems.FirstOrDefaultAsync(x => x.Id == itemId);
         }
 
-        public Task<IEnumerable<Order>> GetUserOrdersAsync(Guid userId)
+        public async Task<IEnumerable<Order>> GetUserOrdersAsync(Guid userId)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Orders
+                .Where(x => x.Id == userId)
+                .ToListAsync();
         }
 
         public async Task<OrderItem?> RemoveItemAsync(Guid orderId, Guid itemId)
