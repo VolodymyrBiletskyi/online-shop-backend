@@ -13,7 +13,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251118224522_config")]
+    [Migration("20251121202300_config")]
     partial class config
     {
         /// <inheritdoc />
@@ -316,6 +316,9 @@ namespace api.Migrations
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("ProductNameSnapshot")
                         .IsRequired()
                         .HasColumnType("text");
@@ -336,9 +339,14 @@ namespace api.Migrations
                     b.Property<Guid>("VariantId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("VariantName")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("VariantId");
 
@@ -776,6 +784,12 @@ namespace api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("api.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("api.Models.ProductVariant", "ProductVariant")
                         .WithMany("OrderItem")
                         .HasForeignKey("VariantId")
@@ -783,6 +797,8 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
+
+                    b.Navigation("Product");
 
                     b.Navigation("ProductVariant");
                 });

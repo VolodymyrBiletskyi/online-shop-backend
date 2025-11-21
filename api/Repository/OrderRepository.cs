@@ -48,7 +48,7 @@ namespace api.Repository
             return await _dbContext.OrderItems.FirstOrDefaultAsync(x => x.Id == itemId);
         }
 
-        public async Task<IEnumerable<Order>> GetUserOrdersAsync(Guid userId)
+        public async Task<IReadOnlyList<Order>> GetUserOrdersAsync(Guid userId)
         {
             return await _dbContext.Orders
                 .Where(x => x.Id == userId)

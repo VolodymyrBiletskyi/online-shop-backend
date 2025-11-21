@@ -8,7 +8,7 @@ namespace api.Interfaces
 {
     public interface IOrderRepository
     {
-        Task<IEnumerable<Order>> GetUserOrdersAsync(Guid userId);
+        Task<IReadOnlyList<Order>> GetUserOrdersAsync(Guid userId);
         Task<Order?> GetByIdAsync(Guid orderId);
         Task<OrderItem?> GetItemByIdAsync(Guid itemId);
         Task CreateAsync(Order order);

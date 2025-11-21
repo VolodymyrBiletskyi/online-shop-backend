@@ -17,6 +17,7 @@ namespace api.Models
         public ProductVariant ProductVariant { get; set; } = null!;
         
         public string ProductNameSnapshot { get; set; } = null!;
+        public string? VariantName { get; set; }
         public string SkuSnapshot { get; set; } = null!;
         public string? AttributesSnapshot { get; set; }
 

@@ -34,10 +34,6 @@ namespace api.Migrations
                 table: "OrderItems");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_OrderItems_Products_ProductId",
-                table: "OrderItems");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_Orders_Users_UserId",
                 table: "Orders");
 
@@ -48,10 +44,6 @@ namespace api.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_ProductImages_ProductId",
                 table: "ProductImages");
-
-            migrationBuilder.DropIndex(
-                name: "IX_OrderItems_ProductId",
-                table: "OrderItems");
 
             migrationBuilder.DropIndex(
                 name: "IX_OrderItems_ProductVariantId",
@@ -88,10 +80,6 @@ namespace api.Migrations
             migrationBuilder.DropColumn(
                 name: "Ship_amount",
                 table: "Orders");
-
-            migrationBuilder.DropColumn(
-                name: "ProductId",
-                table: "OrderItems");
 
             migrationBuilder.DropColumn(
                 name: "ProductVariantId",
@@ -268,6 +256,12 @@ namespace api.Migrations
 
             migrationBuilder.AddColumn<string>(
                 name: "AttributesSnapshot",
+                table: "OrderItems",
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "VariantName",
                 table: "OrderItems",
                 type: "text",
                 nullable: true);
@@ -623,6 +617,10 @@ namespace api.Migrations
                 table: "OrderItems");
 
             migrationBuilder.DropColumn(
+                name: "VariantName",
+                table: "OrderItems");
+
+            migrationBuilder.DropColumn(
                 name: "AppliedAmount",
                 table: "OrderDiscounts");
 
@@ -707,13 +705,6 @@ namespace api.Migrations
                 oldType: "uuid");
 
             migrationBuilder.AddColumn<Guid>(
-                name: "ProductId",
-                table: "OrderItems",
-                type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
-
-            migrationBuilder.AddColumn<Guid>(
                 name: "ProductVariantId",
                 table: "OrderItems",
                 type: "uuid",
@@ -755,11 +746,6 @@ namespace api.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ProductImages_ProductId",
                 table: "ProductImages",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_ProductId",
-                table: "OrderItems",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
@@ -826,14 +812,6 @@ namespace api.Migrations
                 column: "ProductVariantId",
                 principalTable: "ProductVariants",
                 principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_OrderItems_Products_ProductId",
-                table: "OrderItems",
-                column: "ProductId",
-                principalTable: "Products",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Orders_Users_UserId",

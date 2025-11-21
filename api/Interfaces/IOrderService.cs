@@ -9,9 +9,9 @@ namespace api.Interfaces
 {
     public interface IOrderService
     {
-        Task<OrderDto> CreateAsync(CreateOrder createOrder);
+        Task<OrderDto> CreateAsync(Guid userId,CreateOrder createOrder);
         Task<OrderDto> GetByIdAsync(Guid orderId);
-        Task<IEnumerable<OrderDto>> GetUserOrdersAsync(Guid userId);
+        Task<IReadOnlyList<OrderDto>> GetUserOrdersAsync(Guid userId);
         Task<OrderDto> CancelAsync(Guid userId,Guid orderId);
     }
 }
