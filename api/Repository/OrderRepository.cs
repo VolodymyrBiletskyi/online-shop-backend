@@ -40,7 +40,9 @@ namespace api.Repository
 
         public async Task<Order?> GetByIdAsync(Guid orderId)
         {
-            return await _dbContext.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
+            return await _dbContext.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(x => x.Id == orderId);
         }
 
         public async Task<OrderItem?> GetItemByIdAsync(Guid itemId)
@@ -51,7 +53,7 @@ namespace api.Repository
         public async Task<IReadOnlyList<Order>> GetUserOrdersAsync(Guid userId)
         {
             return await _dbContext.Orders
-                .Where(x => x.Id == userId)
+                .Where(x => x.UserId == userId)
                 .ToListAsync();
         }
 

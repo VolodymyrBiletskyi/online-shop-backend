@@ -59,6 +59,12 @@ namespace api.Services
                     request.ProductId,
                     request.VariantId
                 );
+                var product = await _productRepo.GetByIdAsync(request.ProductId)
+                    ?? throw new InvalidOperationException("Product not found");
+
+                ProductVariant? variant = null;
+                if (request.VariantId.HasValue)
+                    variant = await _productRepo.GetVariantAsync(request.VariantId.Value);
 
                 var newItem = new CartItem
                 {
@@ -66,7 +72,9 @@ namespace api.Services
                     ProductId = request.ProductId,
                     VariantId = request.VariantId,
                     Quantity = request.Quantity,
-                    UnitPriceSnapshot = price
+                    UnitPriceSnapshot = price,
+                    ProductNameSnapshot = variant?.Title ?? product.Name,
+                    SkuSnapshot = variant.Sku,
                 };
 
                 await _cartRepo.AddAsync(newItem);

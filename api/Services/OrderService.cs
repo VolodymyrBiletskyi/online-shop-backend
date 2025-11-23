@@ -84,13 +84,18 @@ namespace api.Services
                     Id = Guid.NewGuid(),
                     OrderId = order.Id,
                     ProductId = cartitem.ProductId,
+                    VariantId = cartitem.VariantId,
+                    ProductNameSnapshot = cartitem.ProductNameSnapshot,
+                    SkuSnapshot = cartitem.SkuSnapshot,
+                    AttributesSnapshot = cartitem.AttributesSnapshot,
                     Quantity = cartitem.Quantity,
                     UnitPrice = cartitem.UnitPriceSnapshot
                 });
             }
 
-            await _cartRepo.ClearCartAsync(userId);
-            await _cartRepo.SaveChangesAsync();
+            await _orderRepo.CreateAsync(order);
+            await _cartRepo.ClearCartAsync(cart.Id);
+            await _orderRepo.SaveChangesAsync();
 
             return order.ToOrderDto();
         }

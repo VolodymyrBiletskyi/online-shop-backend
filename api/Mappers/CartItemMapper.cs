@@ -18,6 +18,7 @@ namespace api.Mappers
                 VariantId = item.VariantId,
                 ProductName = item.Product?.Name ?? string.Empty,
                 VariantName = item.ProductVariant?.Title,
+                Sku = item.SkuSnapshot,
                 UnitPrice = item.UnitPriceSnapshot,
                 Quantity = item.Quantity
             };

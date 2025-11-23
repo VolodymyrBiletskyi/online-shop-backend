@@ -244,16 +244,6 @@ namespace api.Migrations
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AlterColumn<Guid>(
-                name: "VariantId",
-                table: "OrderItems",
-                type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"),
-                oldClrType: typeof(Guid),
-                oldType: "uuid",
-                oldNullable: true);
-
             migrationBuilder.AddColumn<string>(
                 name: "AttributesSnapshot",
                 table: "OrderItems",
@@ -299,6 +289,26 @@ namespace api.Migrations
                 oldClrType: typeof(Guid),
                 oldType: "uuid",
                 oldNullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "AttributesSnapshot",
+                table: "CartItems",
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "ProductNameSnapshot",
+                table: "CartItems",
+                type: "text",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "SkuSnapshot",
+                table: "CartItems",
+                type: "text",
+                nullable: false,
+                defaultValue: "");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_OrderDiscounts",
@@ -628,6 +638,18 @@ namespace api.Migrations
                 name: "AppliedAt",
                 table: "OrderDiscounts");
 
+            migrationBuilder.DropColumn(
+                name: "AttributesSnapshot",
+                table: "CartItems");
+
+            migrationBuilder.DropColumn(
+                name: "ProductNameSnapshot",
+                table: "CartItems");
+
+            migrationBuilder.DropColumn(
+                name: "SkuSnapshot",
+                table: "CartItems");
+
             migrationBuilder.RenameColumn(
                 name: "UserId",
                 table: "UserAddresses",
@@ -695,14 +717,6 @@ namespace api.Migrations
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
-
-            migrationBuilder.AlterColumn<Guid>(
-                name: "VariantId",
-                table: "OrderItems",
-                type: "uuid",
-                nullable: true,
-                oldClrType: typeof(Guid),
-                oldType: "uuid");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "ProductVariantId",
