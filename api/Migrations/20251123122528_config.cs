@@ -14,6 +14,10 @@ namespace api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
+                name: "FK_CartItems_ProductVariants_ProductVariantId",
+                table: "CartItems");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_Categories_Categories_ParentId",
                 table: "Categories");
 
@@ -30,10 +34,6 @@ namespace api.Migrations
                 table: "OrderItems");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_OrderItems_Products_ProductId",
-                table: "OrderItems");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_Orders_Users_UserId",
                 table: "Orders");
 
@@ -44,10 +44,6 @@ namespace api.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_ProductImages_ProductId",
                 table: "ProductImages");
-
-            migrationBuilder.DropIndex(
-                name: "IX_OrderItems_ProductId",
-                table: "OrderItems");
 
             migrationBuilder.DropIndex(
                 name: "IX_OrderItems_ProductVariantId",
@@ -70,6 +66,10 @@ namespace api.Migrations
                 table: "Inventory");
 
             migrationBuilder.DropIndex(
+                name: "IX_CartItems_ProductVariantId",
+                table: "CartItems");
+
+            migrationBuilder.DropIndex(
                 name: "IX_Cart_UserId",
                 table: "Cart");
 
@@ -82,16 +82,16 @@ namespace api.Migrations
                 table: "Orders");
 
             migrationBuilder.DropColumn(
-                name: "ProductId",
-                table: "OrderItems");
-
-            migrationBuilder.DropColumn(
                 name: "ProductVariantId",
                 table: "OrderItems");
 
             migrationBuilder.DropColumn(
                 name: "ProductVariantId",
                 table: "Inventory");
+
+            migrationBuilder.DropColumn(
+                name: "ProductVariantId",
+                table: "CartItems");
 
             migrationBuilder.RenameColumn(
                 name: "Userid",
@@ -244,18 +244,14 @@ namespace api.Migrations
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.AlterColumn<Guid>(
-                name: "VariantId",
-                table: "OrderItems",
-                type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"),
-                oldClrType: typeof(Guid),
-                oldType: "uuid",
-                oldNullable: true);
-
             migrationBuilder.AddColumn<string>(
                 name: "AttributesSnapshot",
+                table: "OrderItems",
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "VariantName",
                 table: "OrderItems",
                 type: "text",
                 nullable: true);
@@ -293,6 +289,26 @@ namespace api.Migrations
                 oldClrType: typeof(Guid),
                 oldType: "uuid",
                 oldNullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "AttributesSnapshot",
+                table: "CartItems",
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "ProductNameSnapshot",
+                table: "CartItems",
+                type: "text",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "SkuSnapshot",
+                table: "CartItems",
+                type: "text",
+                nullable: false,
+                defaultValue: "");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_OrderDiscounts",
@@ -376,6 +392,11 @@ namespace api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartItems_VariantId",
+                table: "CartItems",
+                column: "VariantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cart_UserId",
                 table: "Cart",
                 column: "UserId",
@@ -390,6 +411,13 @@ namespace api.Migrations
                 name: "IX_Refunds_ProviderRefundId",
                 table: "Refunds",
                 column: "ProviderRefundId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CartItems_ProductVariants_VariantId",
+                table: "CartItems",
+                column: "VariantId",
+                principalTable: "ProductVariants",
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Categories_Categories_ParentId",
@@ -451,6 +479,10 @@ namespace api.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_CartItems_ProductVariants_VariantId",
+                table: "CartItems");
+
             migrationBuilder.DropForeignKey(
                 name: "FK_Categories_Categories_ParentId",
                 table: "Categories");
@@ -523,6 +555,10 @@ namespace api.Migrations
                 table: "Inventory");
 
             migrationBuilder.DropIndex(
+                name: "IX_CartItems_VariantId",
+                table: "CartItems");
+
+            migrationBuilder.DropIndex(
                 name: "IX_Cart_UserId",
                 table: "Cart");
 
@@ -591,12 +627,28 @@ namespace api.Migrations
                 table: "OrderItems");
 
             migrationBuilder.DropColumn(
+                name: "VariantName",
+                table: "OrderItems");
+
+            migrationBuilder.DropColumn(
                 name: "AppliedAmount",
                 table: "OrderDiscounts");
 
             migrationBuilder.DropColumn(
                 name: "AppliedAt",
                 table: "OrderDiscounts");
+
+            migrationBuilder.DropColumn(
+                name: "AttributesSnapshot",
+                table: "CartItems");
+
+            migrationBuilder.DropColumn(
+                name: "ProductNameSnapshot",
+                table: "CartItems");
+
+            migrationBuilder.DropColumn(
+                name: "SkuSnapshot",
+                table: "CartItems");
 
             migrationBuilder.RenameColumn(
                 name: "UserId",
@@ -666,21 +718,6 @@ namespace api.Migrations
                 nullable: false,
                 defaultValue: 0);
 
-            migrationBuilder.AlterColumn<Guid>(
-                name: "VariantId",
-                table: "OrderItems",
-                type: "uuid",
-                nullable: true,
-                oldClrType: typeof(Guid),
-                oldType: "uuid");
-
-            migrationBuilder.AddColumn<Guid>(
-                name: "ProductId",
-                table: "OrderItems",
-                type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
-
             migrationBuilder.AddColumn<Guid>(
                 name: "ProductVariantId",
                 table: "OrderItems",
@@ -709,6 +746,12 @@ namespace api.Migrations
                 type: "uuid",
                 nullable: true);
 
+            migrationBuilder.AddColumn<Guid>(
+                name: "ProductVariantId",
+                table: "CartItems",
+                type: "uuid",
+                nullable: true);
+
             migrationBuilder.AddPrimaryKey(
                 name: "PK_OrderDiscounts",
                 table: "OrderDiscounts",
@@ -717,11 +760,6 @@ namespace api.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ProductImages_ProductId",
                 table: "ProductImages",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_ProductId",
-                table: "OrderItems",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
@@ -745,9 +783,21 @@ namespace api.Migrations
                 column: "ProductVariantId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartItems_ProductVariantId",
+                table: "CartItems",
+                column: "ProductVariantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cart_UserId",
                 table: "Cart",
                 column: "UserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CartItems_ProductVariants_ProductVariantId",
+                table: "CartItems",
+                column: "ProductVariantId",
+                principalTable: "ProductVariants",
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Categories_Categories_ParentId",
@@ -776,14 +826,6 @@ namespace api.Migrations
                 column: "ProductVariantId",
                 principalTable: "ProductVariants",
                 principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_OrderItems_Products_ProductId",
-                table: "OrderItems",
-                column: "ProductId",
-                principalTable: "Products",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Orders_Users_UserId",

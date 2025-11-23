@@ -2,19 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Models;
 
-namespace api.Models
+namespace api.Dto
 {
-    public class OrderItem
+    public class OrderItemDto
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
-
         public Guid OrderId { get; set; }
-        public Order Order { get; set; } = null!;
         public Guid ProductId { get; set; }
-        public Product Product { get; set; } = null!;
         public Guid? VariantId { get; set; }
-        public ProductVariant ProductVariant { get; set; } = null!;
         
         public string ProductNameSnapshot { get; set; } = null!;
         public string? VariantName { get; set; }

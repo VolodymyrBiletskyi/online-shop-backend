@@ -13,7 +13,7 @@ namespace api.Migrations
         public Guid OrderId { get; set; }
         public Order Order { get; set; } = null!;
 
-        public OrderAddresType Type { get; set; } = OrderAddresType.Shipping;
+        public OrderAddressType Type { get; set; } = OrderAddressType.Shipping;
 
         public string Country { get; set; } = null!;
         public string Street { get; set; } = null!;
@@ -22,7 +22,7 @@ namespace api.Migrations
 
     }
 
-    public enum OrderAddresType
+    public enum OrderAddressType
     {
         Shipping = 0,
         Billing = 1

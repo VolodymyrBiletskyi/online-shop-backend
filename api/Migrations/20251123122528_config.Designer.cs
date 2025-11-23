@@ -13,7 +13,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251118134409_config")]
+    [Migration("20251123122528_config")]
     partial class config
     {
         /// <inheritdoc />
@@ -94,17 +94,25 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("AttributesSnapshot")
+                        .HasColumnType("text");
+
                     b.Property<Guid>("CartId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ProductVariantId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("ProductNameSnapshot")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
+
+                    b.Property<string>("SkuSnapshot")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal>("UnitPriceSnapshot")
                         .HasColumnType("numeric");
@@ -118,7 +126,7 @@ namespace api.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("ProductVariantId");
+                    b.HasIndex("VariantId");
 
                     b.ToTable("CartItems", (string)null);
                 });
@@ -319,6 +327,9 @@ namespace api.Migrations
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("ProductNameSnapshot")
                         .IsRequired()
                         .HasColumnType("text");
@@ -336,12 +347,17 @@ namespace api.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("numeric");
 
-                    b.Property<Guid>("VariantId")
+                    b.Property<Guid?>("VariantId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("VariantName")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("VariantId");
 
@@ -703,7 +719,7 @@ namespace api.Migrations
 
                     b.HasOne("api.Models.ProductVariant", "ProductVariant")
                         .WithMany()
-                        .HasForeignKey("ProductVariantId");
+                        .HasForeignKey("VariantId");
 
                     b.Navigation("Cart");
 
@@ -779,13 +795,20 @@ namespace api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Models.ProductVariant", "ProductVariant")
-                        .WithMany("OrderItem")
-                        .HasForeignKey("VariantId")
+                    b.HasOne("api.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("api.Models.ProductVariant", "ProductVariant")
+                        .WithMany("OrderItem")
+                        .HasForeignKey("VariantId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.Navigation("Order");
+
+                    b.Navigation("Product");
 
                     b.Navigation("ProductVariant");
                 });

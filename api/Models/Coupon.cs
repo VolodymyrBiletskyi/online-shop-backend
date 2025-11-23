@@ -24,7 +24,7 @@ namespace api.Models
     
     public enum CouponType
     {
-         Percent = 0,
+        Percent = 0,
         Fixed = 1
     }
 
