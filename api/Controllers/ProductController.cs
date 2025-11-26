@@ -28,6 +28,14 @@ namespace api.Controllers
             var products = await _productService.GetAllAsync();
             return Ok(products);
         }
+
+        [HttpGet("names")]
+        public async Task<ActionResult<List<ProductNameDto>>> GetAllNames()
+        {
+            var productNames = await _productService.GetAllNamesAsync();
+            return Ok(productNames);
+        }
+
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<ProductDto>> GetById(Guid id)
         {

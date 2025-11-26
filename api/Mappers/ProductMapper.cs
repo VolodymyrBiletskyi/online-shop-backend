@@ -17,6 +17,7 @@ namespace api.Mappers
                 Id = product.Id,
                 CategoryId = product.CategoryId,
                 Name = product.Name,
+                CategoryName = product.Category?.Name,
                 Slug = product.Slug,
                 Description = product.Description,
                 SortOrder = product.SortOrder,

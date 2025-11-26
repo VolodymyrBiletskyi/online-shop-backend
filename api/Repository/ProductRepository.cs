@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Dto;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ namespace api.Repository
         {
             return await _dbContext.Products
             .AsNoTracking()
+            .Include(p => p.Category)
             .ToListAsync();
         }
 
@@ -97,6 +99,19 @@ namespace api.Repository
                 throw new InvalidOperationException("Product does not exist");
 
             return productPrice;
+        }
+
+        public async Task<IReadOnlyList<ProductNameDto>> GetAllNamesAsync()
+        {
+            return await _dbContext.Products
+                .AsNoTracking()
+                .Select(p => new ProductNameDto
+                {
+                    Name = p.Name,
+                    Description = p.Description,
+                    BasePrice = p.BasePrice
+                })
+                .ToListAsync();
         }
     }
 }

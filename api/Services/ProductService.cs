@@ -64,5 +64,11 @@ namespace api.Services
             await _productRepo.DeleteAsync(id);
             return true;
         }
+
+        public async Task<IReadOnlyList<ProductNameDto>> GetAllNamesAsync()
+        {
+            var names = await _productRepo.GetAllNamesAsync();
+            return names;
+        }
     }
 }

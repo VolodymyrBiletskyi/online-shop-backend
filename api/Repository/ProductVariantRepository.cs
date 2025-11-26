@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Dto;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -65,7 +66,7 @@ namespace api.Repository
         {
             return _dbcontext.ProductVariants.SingleOrDefaultAsync(s => s.Sku == sku);
         }
-
+        
         public Task<ProductVariant?> GetWithPRoductsAndInventoryAsync(Guid id)
         {
             return _dbcontext.ProductVariants

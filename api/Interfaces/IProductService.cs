@@ -14,5 +14,6 @@ namespace api.Interfaces
         Task<ProductDto> GetByIdAsync(Guid id);
         Task<ProductDto> UpdateAsync(Guid id, UpdateProductRequest updateProduct);
         Task<bool> DeleteAsync(Guid id);
+        Task<IReadOnlyList<ProductNameDto>> GetAllNamesAsync();
     }
 }

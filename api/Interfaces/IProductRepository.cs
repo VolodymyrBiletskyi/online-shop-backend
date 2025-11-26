@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Dto;
 using api.Models;
 
 namespace api.Interfaces
@@ -18,5 +19,6 @@ namespace api.Interfaces
         Task<bool> SlugExistsAsync(string slug);
         Task<ProductVariant?> GetVariantAsync(Guid variantId);
         Task<decimal> GetPriceSnapshotAsync(Guid productId,Guid? variantId);
+        Task<IReadOnlyList<ProductNameDto>> GetAllNamesAsync();
     }
 }
