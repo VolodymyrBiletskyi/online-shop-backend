@@ -55,5 +55,34 @@ namespace api.Mappers
                 
             };
         }
+
+        public static UserAddress ToAddressEntity(AddUserAddress address)
+        {
+            return new UserAddress
+            {
+                Id = Guid.NewGuid(),
+                Country = address.Country,
+                City = address.City,
+                Street = address.Street,
+                NumOfObject = address.NumOfObject,
+                PostalCode = address.PostalCode,
+                IsDefault = address.IsDefault
+            };
+        }
+
+        public static UserAddressDto ToAddressDto(this UserAddress address)
+        {
+            return new UserAddressDto
+            {
+                Id = address.Id,
+                UserId = address.UserId,
+                Country = address.Country,
+                City = address.City,
+                Street = address.Street,
+                NumOfObject = address.NumOfObject,
+                PostalCode = address.PostalCode,
+                IsDefault = address.IsDefault
+            };
+        }
     }
 }

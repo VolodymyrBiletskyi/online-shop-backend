@@ -1,15 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Dto;
 using api.Contracts.Users;
 using api.Interfaces;
 using api.Mappers;
-using Humanizer;
-using api.Models;
-using api.Extensions;
+
 
 namespace api.Services
 {
@@ -111,6 +105,64 @@ namespace api.Services
 
             await _userRepo.DeleteAsync(id);
             return true;
+        }
+
+        public async Task<UserAddressDto> AddAddressAsync(Guid userId,AddUserAddress address)
+        {
+            var user = await _userRepo.GetByIdAsync(userId)
+                ?? throw new InvalidOperationException("User does not exist");
+
+            var street =address.Street;
+            var numOfObject = address.NumOfObject;
+
+            var exists = await _userRepo.AddressExistsAsync(userId,street,numOfObject);
+            if(exists)
+                throw new InvalidOperationException("This address already added");
+
+            
+
+            var userAddress = UserMapper.ToAddressEntity(address);
+            userAddress.UserId = userId;
+            userAddress.Street = street;
+            userAddress.NumOfObject = numOfObject;
+
+            await  _userRepo.AddAddressAsync(userAddress);
+            await _userRepo.SaveChangesAsync();
+
+            return userAddress.ToAddressDto();
+        }
+
+        public async Task<UserAddressDto?> GetDefaultUserAddressAsync(Guid userId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId)
+                ?? throw new InvalidOperationException("User does not exist");
+
+            var address = await _userRepo.GetDefaultUserAddressAsync(userId);
+            return address?.ToAddressDto();
+        }
+
+        public async Task<IReadOnlyList<UserAddressDto>> GetAllUserAddressesAsync(Guid userId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId)
+                ?? throw new InvalidOperationException("User does not exist");
+
+            var addresses = await _userRepo.GetAllUserAddresses(userId);
+
+            return addresses.Select(UserMapper.ToAddressDto).ToList();
+            
+        }
+
+        public async Task<UserAddressDto?> DeleteUserAddressAsync(Guid userId, Guid addressId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId)
+                ?? throw new InvalidOperationException("User does not exist");
+
+            var existingAddress = await _userRepo.GetAddressById(addressId)
+                ?? throw new InvalidOperationException("Address does not exist");
+
+            var address = await _userRepo.DeleteAddressAsync(userId,addressId)
+                ?? throw new InvalidOperationException("Failed to delete address");
+            return address.ToAddressDto();
         }
     }
 }

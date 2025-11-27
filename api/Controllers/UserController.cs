@@ -80,6 +80,33 @@ namespace api.Controllers
             var deleted = await _userService.DeleteAsync(id);
             return deleted ? NoContent() : NotFound();
         }
+
+        [HttpPost("{userId}/address")]
+        public async Task<ActionResult<UserAddressDto>> AddUserAddress([FromRoute] Guid userId,[FromBody] AddUserAddress address)
+        {
+            var userAddress = await _userService.AddAddressAsync(userId, address);
+            return Ok(userAddress);
+        }
+
+        [HttpGet("{userId}/address/default")]
+        public async Task<ActionResult<UserAddressDto>> GetUserAdress([FromRoute] Guid userId)
+        {
+            var userAddress = await _userService.GetDefaultUserAddressAsync(userId);
+            return Ok(userAddress);
+        }
+
+        [HttpGet("{userId}/addresses")]
+        public async Task<ActionResult<List<UserAddressDto>>> GetAllUserAddresses([FromRoute] Guid userId)
+        {
+            var addresses = await _userService.GetAllUserAddressesAsync(userId);
+            return Ok(addresses);
+        }
         
+        [HttpDelete("{userId}/addresses/{addressId}")]
+        public async Task<ActionResult<UserAddressDto>> DeleteUserAddress([FromRoute]Guid userId, [FromRoute] Guid addressId)
+        {
+            var userAddress = await _userService.DeleteUserAddressAsync(userId,addressId);
+            return Ok(userAddress);
+        }
     }
 }
