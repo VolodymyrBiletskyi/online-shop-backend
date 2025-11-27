@@ -55,6 +55,46 @@ namespace api.Repository
             return userModel;
         }
 
-        
+        public Task AddAddressAsync(UserAddress address)
+        {
+            return _dbContext.AddAsync(address).AsTask();
+        }
+
+        public async Task<UserAddress?> GetDefaultUserAddressAsync(Guid userId)
+        {
+            return await _dbContext.UserAddresses.FirstOrDefaultAsync(u => u.UserId == userId && u.IsDefault);
+        }
+
+        public Task<bool> AddressExistsAsync(Guid userId, string street, string numOfObject)
+        {
+            return _dbContext.UserAddresses
+                .AnyAsync(a =>
+                    a.UserId == userId &&
+                    a.Street == street &&
+                    a.NumOfObject == numOfObject);
+        }
+
+        public async Task<IReadOnlyList<UserAddress>> GetAllUserAddresses(Guid userId)
+        {
+            return await _dbContext.UserAddresses
+                .Where(u => u.UserId == userId)
+                .ToListAsync();
+        }
+
+        public async Task<UserAddress?> DeleteAddressAsync(Guid userId, Guid addressId)
+        {
+            var userAddress = await _dbContext.UserAddresses
+            .FirstOrDefaultAsync(a => a.Id == addressId && a.UserId == userId);
+            if(userAddress == null) return null;
+
+            _dbContext.UserAddresses.Remove(userAddress);
+            await _dbContext.SaveChangesAsync();
+            return userAddress;
+        }
+
+        public async Task<UserAddress?> GetAddressById(Guid addressId)
+        {
+            return await _dbContext.UserAddresses.FirstOrDefaultAsync(a => a.Id == addressId);
+        }
     }
 }
