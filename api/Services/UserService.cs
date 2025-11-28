@@ -112,19 +112,20 @@ namespace api.Services
             var user = await _userRepo.GetByIdAsync(userId)
                 ?? throw new InvalidOperationException("User does not exist");
 
-            var street =address.Street;
+            var street = address.Street;
             var numOfObject = address.NumOfObject;
+            var city = address.City;
 
-            var exists = await _userRepo.AddressExistsAsync(userId,street,numOfObject);
+            var exists = await _userRepo.AddressExistsAsync(userId,street,numOfObject,city);
             if(exists)
                 throw new InvalidOperationException("This address already added");
 
-            
-
             var userAddress = UserMapper.ToAddressEntity(address);
             userAddress.UserId = userId;
-            userAddress.Street = street;
-            userAddress.NumOfObject = numOfObject;
+
+            var existingDefault = await _userRepo.GetDefaultUserAddressAsync(userId);
+            if(address.IsDefault == true && existingDefault !=null) 
+                throw new InvalidOperationException("User can not have more then 1 default address");
 
             await  _userRepo.AddAddressAsync(userAddress);
             await _userRepo.SaveChangesAsync();
@@ -157,11 +158,42 @@ namespace api.Services
             var user = await _userRepo.GetByIdAsync(userId)
                 ?? throw new InvalidOperationException("User does not exist");
 
-            var existingAddress = await _userRepo.GetAddressById(addressId)
+            var existingAddress = await _userRepo.GetAddressByIdAsync(addressId)
                 ?? throw new InvalidOperationException("Address does not exist");
 
             var address = await _userRepo.DeleteAddressAsync(userId,addressId)
                 ?? throw new InvalidOperationException("Failed to delete address");
+            return address.ToAddressDto();
+        }
+
+        public async Task<UserAddressDto> UpdateAddressAsync(Guid addressId, UpdateAddress update)
+        {
+            var address = await _userRepo.GetAddressByIdAsync(addressId)
+                ?? throw new InvalidOperationException("Address does not exist");
+
+            address.UpdateAddress(update);
+
+            await _userRepo.SaveChangesAsync();
+
+            return address.ToAddressDto();
+        }
+        public async Task<UserAddressDto> UpdateAddressDefaultAsync(Guid addressId)
+        {
+            var address = await _userRepo.GetAddressByIdAsync(addressId)
+                ?? throw new InvalidOperationException("Address does not exist");
+
+            if(address.IsDefault)
+                throw new InvalidOperationException("This address is already the default one");
+
+            var currentDefault = await _userRepo.GetDefaultUserAddressAsync(address.UserId);
+
+            if(currentDefault !=null)
+                currentDefault.IsDefault = false;
+
+            address.IsDefault = true;
+
+            await _userRepo.SaveChangesAsync();
+
             return address.ToAddressDto();
         }
     }

@@ -108,5 +108,18 @@ namespace api.Controllers
             var userAddress = await _userService.DeleteUserAddressAsync(userId,addressId);
             return Ok(userAddress);
         }
+
+        [HttpPatch("{addressId:guid}")]
+        public async Task<ActionResult> UpdateUserAddress([FromRoute] Guid addressId,[FromBody] UpdateAddress update)
+        {
+            var userAddress = await _userService.UpdateAddressAsync(addressId,update);
+            return Ok(userAddress);
+        }
+        [HttpPatch("{addressId:guid}/set-default")]
+        public async Task<ActionResult<UserAddressDto>>SetDefaultAddress([FromRoute] Guid addressId)
+        {
+            var address = await _userService.UpdateAddressDefaultAsync(addressId);
+            return Ok(address);
+        }
     }
 }

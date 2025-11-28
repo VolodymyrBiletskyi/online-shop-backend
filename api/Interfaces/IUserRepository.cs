@@ -17,9 +17,9 @@ namespace api.Interfaces
         Task<User?> DeleteAsync(Guid id);
         Task AddAddressAsync(UserAddress address);
         Task<UserAddress?> GetDefaultUserAddressAsync(Guid userId);
-        Task<bool> AddressExistsAsync(Guid userId, string street, string numOfObject);
+        Task<bool> AddressExistsAsync(Guid userId, string street, string numOfObject,string city);
         Task<IReadOnlyList<UserAddress>> GetAllUserAddresses(Guid userId);
         Task<UserAddress?> DeleteAddressAsync(Guid userId,Guid addressId);
-        Task<UserAddress?> GetAddressById(Guid addressId);
+        Task<UserAddress?> GetAddressByIdAsync(Guid addressId);
     }
 }
