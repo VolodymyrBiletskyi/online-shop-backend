@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using api.Dto;
 using api.Contracts.Users;
 using api.Models;
+using System.Runtime.CompilerServices;
 
 namespace api.Mappers
 {
@@ -83,6 +84,16 @@ namespace api.Mappers
                 PostalCode = address.PostalCode,
                 IsDefault = address.IsDefault
             };
+        }
+
+        public static void UpdateAddress(this UserAddress entity, UpdateAddress address)
+        {
+            entity.Country =  address.Country ?? entity.Country;
+            entity.City = address.City ?? entity.City;
+            entity.Street = address.Street ?? entity.Street;
+            entity.NumOfObject = address.NumOfObject ?? entity.NumOfObject;
+            entity.PostalCode = address.PostalCode ?? entity.PostalCode;
+            entity.IsDefault = address.IsDefault ?? entity.IsDefault;
         }
     }
 }

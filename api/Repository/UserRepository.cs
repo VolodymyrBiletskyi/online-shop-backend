@@ -65,12 +65,13 @@ namespace api.Repository
             return await _dbContext.UserAddresses.FirstOrDefaultAsync(u => u.UserId == userId && u.IsDefault);
         }
 
-        public Task<bool> AddressExistsAsync(Guid userId, string street, string numOfObject)
+        public Task<bool> AddressExistsAsync(Guid userId, string street, string numOfObject, string city)
         {
             return _dbContext.UserAddresses
                 .AnyAsync(a =>
                     a.UserId == userId &&
                     a.Street == street &&
+                    a.City == city &&
                     a.NumOfObject == numOfObject);
         }
 
@@ -92,7 +93,7 @@ namespace api.Repository
             return userAddress;
         }
 
-        public async Task<UserAddress?> GetAddressById(Guid addressId)
+        public async Task<UserAddress?> GetAddressByIdAsync(Guid addressId)
         {
             return await _dbContext.UserAddresses.FirstOrDefaultAsync(a => a.Id == addressId);
         }
