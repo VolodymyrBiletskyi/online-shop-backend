@@ -6,6 +6,7 @@ using api.Contracts.Order;
 using api.Dto;
 using api.Interfaces;
 using api.Mappers;
+using api.Migrations;
 using api.Models;
 
 namespace api.Services
@@ -14,11 +15,13 @@ namespace api.Services
     {
         private readonly IOrderRepository _orderRepo;
         private readonly ICartRepository _cartRepo;
+        private readonly IUserRepository _userRepo;
 
-        public OrderService(IOrderRepository orderRepo,ICartRepository cartRepo)
+        public OrderService(IOrderRepository orderRepo,ICartRepository cartRepo,IUserRepository userRepo)
         {
             _orderRepo = orderRepo;
             _cartRepo = cartRepo;
+            _userRepo = userRepo;
         }
 
         public async Task<OrderDto> CancelAsync(Guid userId, Guid orderId)
@@ -48,6 +51,23 @@ namespace api.Services
             var cart = await _cartRepo.GetActiveCartByUserAsync(userId)
                 ?? throw new InvalidOperationException("Cart is empty or does not exist");
 
+            var userAddress = await _userRepo.GetAddressByIdAsync(createOrder.UserAddressId)
+                ?? throw new InvalidOperationException("Address not found");
+
+            if(userAddress.UserId != userId)
+                throw new InvalidOperationException("Address does not belong to this user");
+            
+            var orderAddress = new OrderAddress
+            {
+                Id = Guid.NewGuid(),
+                Country = userAddress.Country,
+                City = userAddress.City,
+                Street = userAddress.Street,
+                BuildingNumber = userAddress.NumOfObject,
+                PostalCode = userAddress.PostalCode,
+                Type = userAddress.Type
+            };
+
             decimal subtotal = cart.Items.Sum(i => i.UnitPriceSnapshot * i.Quantity);
             decimal discount = 0;
             decimal tax = 0;
@@ -60,7 +80,8 @@ namespace api.Services
             {
                 Id = Guid.NewGuid(),
                 UserId = userId,
-                OrderAddressId = createOrder.OrderAddressId,
+                OrderAddressId = orderAddress.Id,
+                OrderAddress = orderAddress,
                 OrderNumber = ordernumber,
 
                 Status = OrderStatus.Created,
@@ -106,6 +127,17 @@ namespace api.Services
                 ?? throw new InvalidOperationException("Order does not exist");
 
             return order.ToOrderDto();
+        }
+
+        public async Task<OrderAddressDto> GetOrderAddressAsync(Guid orderId)
+        {
+            var order = await _orderRepo.GetByIdAsync(orderId)
+                ?? throw new InvalidOperationException("Order does not exist");
+
+            var address = await _orderRepo.GetOrderAddress(orderId);
+
+            return address.ToDto();
+            
         }
 
         public async Task<IReadOnlyList<OrderDto>> GetUserOrdersAsync(Guid userId)

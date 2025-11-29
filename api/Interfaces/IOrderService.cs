@@ -13,5 +13,6 @@ namespace api.Interfaces
         Task<OrderDto> GetByIdAsync(Guid orderId);
         Task<IReadOnlyList<OrderDto>> GetUserOrdersAsync(Guid userId);
         Task<OrderDto> CancelAsync(Guid userId,Guid orderId);
+        Task<OrderAddressDto> GetOrderAddressAsync(Guid orderId);
     }
 }

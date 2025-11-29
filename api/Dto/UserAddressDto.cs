@@ -10,7 +10,7 @@ namespace api.Dto
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public UserAddresType Type { get; set; } 
+        public AddressType Type { get; set; } 
         public string Country { get; set; } = null!;
         public string City { get; set; } = null!;
         public string Street { get; set; } = null!;

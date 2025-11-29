@@ -21,12 +21,15 @@ namespace api.Repository
         {
             return await _dbContext.Products
             .AsNoTracking()
+            .Include(p => p.Category)
             .ToListAsync();
         }
 
         public Task<Product?> GetByIdAsync(Guid id)
         {
-            return _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
+            return _dbContext.Products
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public Task CrateAsync(Product entity)

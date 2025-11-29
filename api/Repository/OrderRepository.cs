@@ -50,6 +50,11 @@ namespace api.Repository
             return await _dbContext.OrderItems.FirstOrDefaultAsync(x => x.Id == itemId);
         }
 
+        public async Task<OrderAddress> GetOrderAddress(Guid orderId)
+        {
+            return await _dbContext.OrderAdresses.SingleAsync(x => x.OrderId == orderId);
+        }
+
         public async Task<IReadOnlyList<Order>> GetUserOrdersAsync(Guid userId)
         {
             return await _dbContext.Orders
