@@ -47,5 +47,12 @@ namespace api.Controllers
             return Ok(order);
         }
 
+        [HttpGet("{orderId:guid}/order-address")]
+        public async Task<ActionResult<OrderAddressDto>> GetOrderAddress([FromRoute] Guid orderId)
+        {
+            var address = await _orderService.GetOrderAddressAsync(orderId);
+            return Ok(address);
+        }
+
     }
 }

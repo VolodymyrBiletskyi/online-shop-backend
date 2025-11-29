@@ -7,7 +7,7 @@ namespace api.Contracts.Order
 {
     public class CreateOrder
     {
-        public Guid OrderAddressId { get; set; }
+        public Guid UserAddressId { get; set; }
 
     }
 }

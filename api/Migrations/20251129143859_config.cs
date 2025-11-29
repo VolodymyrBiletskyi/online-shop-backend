@@ -280,6 +280,13 @@ namespace api.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+            migrationBuilder.AddColumn<string>(
+                name: "City",
+                table: "OrderAdresses",
+                type: "text",
+                nullable: false,
+                defaultValue: "");
+
             migrationBuilder.AlterColumn<Guid>(
                 name: "VariantId",
                 table: "Inventory",
@@ -637,6 +644,10 @@ namespace api.Migrations
             migrationBuilder.DropColumn(
                 name: "AppliedAt",
                 table: "OrderDiscounts");
+
+            migrationBuilder.DropColumn(
+                name: "City",
+                table: "OrderAdresses");
 
             migrationBuilder.DropColumn(
                 name: "AttributesSnapshot",

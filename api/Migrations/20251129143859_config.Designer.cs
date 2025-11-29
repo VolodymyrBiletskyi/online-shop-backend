@@ -13,7 +13,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251123122528_config")]
+    [Migration("20251129143859_config")]
     partial class config
     {
         /// <inheritdoc />
@@ -33,6 +33,10 @@ namespace api.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("BuildingNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("text");
 

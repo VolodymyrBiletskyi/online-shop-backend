@@ -12,7 +12,7 @@ namespace api.Models
         public Guid UserId { get; set; }
         public User User { get; set; } = null!;
 
-        public UserAddresType Type { get; set; } = UserAddresType.Shipping;
+        public AddressType Type { get; set; } = AddressType.Shipping;
         public string Country { get; set; } = null!;
         public string City { get; set; } = null!;
         public string Street { get; set; } = null!;
@@ -22,7 +22,7 @@ namespace api.Models
         public bool IsDefault { get; set; } = false;
     }
     
-    public enum UserAddresType
+    public enum AddressType
     {
         Shipping = 0,
         Billing = 1

@@ -56,15 +56,6 @@ namespace api.Repository
            return await _dbContext.CartItems.FirstOrDefaultAsync(x => x.Id == itemId);
         }
 
-        // public Task<CartItem?> GetItemAsync(Guid ItemId, Guid productId, Guid? variantId)
-        // {
-        //     return _dbContext.CartItems
-        //         .FirstOrDefaultAsync(i =>
-        //             i.Id == ItemId &&
-        //             i.ProductId == productId &&
-        //             i.VariantId == variantId);
-        // }
-
         public async Task<CartItem?> RemoveItemAsync(Guid itemId)
         {
             var item = await GetByIdAsync(itemId);
