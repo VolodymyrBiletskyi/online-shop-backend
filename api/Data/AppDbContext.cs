@@ -36,5 +36,6 @@ namespace api.Data
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<OrderDiscount> OrderDiscounts { get; set; }
         public DbSet<Refund> Refunds { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }
