@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace api.Contracts.Users
 {
-    public class RefreshTokenRequest
+    public class AuthWithRefreshToken
     {
+        public AuthResult Auth { get; set; } = null!;
         public string RefreshToken { get; set; } = null!;
     }
 }

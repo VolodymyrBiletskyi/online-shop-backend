@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Contracts.Users;
@@ -24,7 +25,7 @@ namespace api.Services
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<AuthResult?> LoginAsync(LoginUserDto login)
+        public async Task<AuthWithRefreshToken?> LoginAsync(LoginUserDto login)
         {
             var user = await _userRepo.GetByEmailAsync(login.Email)
                 ?? throw new InvalidOperationException("User not found");
@@ -37,6 +38,9 @@ namespace api.Services
             }
 
             var accessToken = _jwt.GenerateAccesToken(user);
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(accessToken);
             var expiresAt = DateTime.UtcNow.AddMinutes(_jwt.AccessTokenMinutes);
 
             var rawRefresh = _jwt.GenerateRefreshTOken();
@@ -53,14 +57,19 @@ namespace api.Services
             await _refreshRepo.AddAsync(refreshEntity);
             await _refreshRepo.SaveChangesAsync();
 
-            return new AuthResult
+            var auth = new AuthResult
             {
                 Id = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
                 AccessToken = accessToken,
-                RefreshToken = rawRefresh,
                 ExpiresAtUtc = expiresAt
+            };
+
+            return new AuthWithRefreshToken
+            {
+                Auth = auth,
+                RefreshToken = rawRefresh
             };
         }
 
@@ -79,7 +88,7 @@ namespace api.Services
             await _refreshRepo.SaveChangesAsync();
         }
 
-        public async Task<AuthResult?> RefeshAsync(string rawRefreshToken)
+        public async Task<AuthWithRefreshToken?> RefeshAsync(string rawRefreshToken)
         {
             var hash = _jwt.HashToken(rawRefreshToken);
             var token = await _refreshRepo.GetByHashAsync(hash);
@@ -108,16 +117,24 @@ namespace api.Services
             await _refreshRepo.SaveChangesAsync();
 
             var newAccessToken = _jwt.GenerateAccesToken(user);
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(newAccessToken);
             var expiresAt = DateTime.UtcNow.AddMinutes(_jwt.AccessTokenMinutes);
 
-            return new AuthResult
+            var auth = new AuthResult
             {
                 Id = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
                 AccessToken = newAccessToken,
-                RefreshToken = newRawRefresh,
                 ExpiresAtUtc = expiresAt
+            };
+
+            return new AuthWithRefreshToken
+            {
+                Auth = auth,
+                RefreshToken = newRawRefresh
             };
         }
     }
