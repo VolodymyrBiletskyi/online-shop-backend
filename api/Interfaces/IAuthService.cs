@@ -8,8 +8,8 @@ namespace api.Interfaces
 {
     public interface IAuthService
     {
-        Task<AuthResult?> LoginAsync(LoginUserDto login);
-        Task<AuthResult?> RefeshAsync(string rawRefreshToken);
+        Task<AuthWithRefreshToken?> LoginAsync(LoginUserDto login);
+        Task<AuthWithRefreshToken?> RefeshAsync(string rawRefreshToken);
         Task LogoutAsync(Guid userId); 
     }
 }

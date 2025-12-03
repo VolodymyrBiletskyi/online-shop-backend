@@ -23,29 +23,40 @@ namespace api.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AuthResult>> Login([FromBody] LoginUserDto loginDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var authResult = await _authservice.LoginAsync(loginDto);
-
             if(authResult is null)
                 return Unauthorized(new {message = "Invalid email or password"});
 
-            return Ok(authResult);
+            Response.Cookies.Append("refreshToken", authResult.RefreshToken,new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
+            return Ok(authResult.Auth);
         }
 
         [HttpPost("refresh")]
-        public async Task<ActionResult> Refresh([FromBody] RefreshTokenRequest request)
+        public async Task<ActionResult> Refresh()
         {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if(!Request.Cookies.TryGetValue("refreshToken", out var rawRefreshToken))
+                return Unauthorized(new {message = "No refresh token"});
             
-            var result = await _authservice.RefeshAsync(request.RefreshToken);
-
+            var result = await _authservice.RefeshAsync(rawRefreshToken);
             if(result is null)
                 return Unauthorized(new {message = "Invalid or expired refresh token"});
 
-            return Ok(result);
+            Response.Cookies.Append("refreshToken", result.RefreshToken,new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
+            return Ok(result.Auth);
         }
 
         [Authorize]
@@ -55,6 +66,8 @@ namespace api.Controllers
             var userId = User.GeUserId();
             
             await _authservice.LogoutAsync(userId);
+
+            Response.Cookies.Delete("refreshToken");
 
             return NoContent();
         }

@@ -12,7 +12,6 @@ namespace api.Contracts.Users
         public string? FullName { get; set; }
         public string? Email { get; set; }
         public string AccessToken { get; set; } = null!;
-        public string RefreshToken { get; set; } = null!;
         public DateTime ExpiresAtUtc { get; set; }
     }
 }
