@@ -11,14 +11,11 @@ namespace api.Services
     {
         private readonly IUserRepository _userRepo;
         private readonly IPasswordHasher _passwordHasher;
-        private readonly IJwtProvider _jwtProvider;
         private readonly IUserValidator _validator;
-        public UserService(IUserRepository userRepo, IPasswordHasher passwordHasher,
-        IJwtProvider jwtProvider, IUserValidator validator)
+        public UserService(IUserRepository userRepo, IPasswordHasher passwordHasher, IUserValidator validator)
         {
             _userRepo = userRepo;
             _passwordHasher = passwordHasher;
-            _jwtProvider = jwtProvider;
             _validator = validator;
 
         }
@@ -75,27 +72,6 @@ namespace api.Services
             await _userRepo.SaveChangesAsync();
             return existingUser.ToDto();
             
-        }
-
-        public async Task<AuthResult> LoginAsync(LoginUserDto logindDto)
-        {
-            var user = await _userRepo.GetByEmailAsync(logindDto.Email)
-                ?? throw new Exception("User not found");
-
-            var result = _passwordHasher.Verify(logindDto.Password, user.PasswordHash);
-
-            if (result == false)
-            {
-                throw new Exception("Failed to login");
-            }
-
-            var token = _jwtProvider.GenerateToken(user);
-
-            var parsed = new JwtSecurityTokenHandler().ReadJwtToken(token);
-            var expiresAt = parsed.ValidTo;
-
-            return user.ToAuthResult(token, expiresAt);
-
         }
 
         public async Task<bool> DeleteAsync(Guid id)

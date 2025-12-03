@@ -19,7 +19,7 @@ namespace api.Configurations
             builder
                 .HasOne<User>()
                 .WithMany()
-                .HasForeignKey(x => x.Id)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder

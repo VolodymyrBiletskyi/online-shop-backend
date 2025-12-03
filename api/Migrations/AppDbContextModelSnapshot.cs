@@ -540,6 +540,7 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
@@ -905,7 +906,7 @@ namespace api.Migrations
                 {
                     b.HasOne("api.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

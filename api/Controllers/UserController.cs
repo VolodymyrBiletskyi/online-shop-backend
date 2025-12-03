@@ -66,14 +66,6 @@ namespace api.Controllers
 
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult<AuthResult>> Login([FromBody] LoginUserDto loginDto)
-        {
-            var authResult = await _userService.LoginAsync(loginDto);
-
-            return Ok(authResult);
-        }
-
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {

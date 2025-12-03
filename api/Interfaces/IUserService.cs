@@ -16,7 +16,6 @@ namespace api.Interfaces
         Task<UserDto> CreateAsync(CreateUserDto dto);
         Task<UserDto?> GetByIdAsync(Guid id);
         Task<UserDto> UpdateAsync(Guid id, UpdateUserDto updateDto);
-        Task<AuthResult> LoginAsync(LoginUserDto logindDto);
         Task<bool> DeleteAsync(Guid id);
         Task<UserAddressDto> AddAddressAsync(Guid userId,AddUserAddress address);
         Task<UserAddressDto?> GetDefaultUserAddressAsync(Guid userId);

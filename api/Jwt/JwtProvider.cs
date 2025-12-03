@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Runtime.Intrinsics.Arm;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using api.Interfaces;
@@ -12,21 +14,26 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace api.Jwt
 {
-    public class JwtProvider(IOptions<JwtOptions> options) : IJwtProvider
+    public class JwtProvider : IJwtProvider
     {
-        private readonly JwtOptions _options = options.Value;
+        private readonly JwtOptions _options;
+        private readonly byte[] _key;
 
-        public string GenerateToken(User user)
+        public JwtProvider(IOptions<JwtOptions> options)
         {
-            var nowUtc = DateTime.UtcNow;
-            var expiresUtc = nowUtc.AddMinutes(_options.AccesTokenMinutes);
-            
+            _options = options.Value;
+            _key = Encoding.UTF8.GetBytes(_options.SecretKey);
+        }
+        public int AccessTokenMinutes => _options.AccesTokenMinutes;
+
+        public string GenerateAccesToken(User user)
+        {            
             Claim[] claims = [
                 new("userId", user.Id.ToString()),
                 new("email", user.Email ?? string.Empty)];
 
             var signingCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
+                new SymmetricSecurityKey(_key),
                 SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
@@ -34,12 +41,25 @@ namespace api.Jwt
             signingCredentials: signingCredentials,
             issuer: _options.Issuer,
             audience: _options.Audience,
-            notBefore: nowUtc,
-            expires: expiresUtc);
+            notBefore: DateTime.UtcNow,
+            expires: DateTime.UtcNow.AddMinutes(_options.AccesTokenMinutes));
 
-            var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
 
-            return tokenValue;
+        public string GenerateRefreshTOken()
+        {
+            var bytes = new byte[64];
+            RandomNumberGenerator.Fill(bytes);
+            return Convert.ToBase64String(bytes);
+        }
+
+        public string HashToken(string token)
+        {
+            using var sha = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(token);
+            var hash = sha.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
         }
     }
 }
