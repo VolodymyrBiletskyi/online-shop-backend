@@ -44,19 +44,6 @@ namespace api.Mappers
 
         }
 
-        public static AuthResult ToAuthResult(this User user, string token, DateTime expiresAt)
-        {
-            return new AuthResult
-            {
-                Id = user.Id,
-                FullName = user.FullName,
-                Email = user.Email,
-                Token = token,
-                ExpiresAtUtc = expiresAt,
-                
-            };
-        }
-
         public static UserAddress ToAddressEntity(AddUserAddress address)
         {
             return new UserAddress

@@ -8,6 +8,10 @@ namespace api.Interfaces
 {
     public interface IJwtProvider
     {
-        public string GenerateToken(User user);
+        string GenerateAccesToken(User user);
+        string GenerateRefreshTOken();
+        string HashToken(string token);
+
+        int AccessTokenMinutes { get; }
     }    
 }
