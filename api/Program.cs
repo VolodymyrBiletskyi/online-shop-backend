@@ -82,8 +82,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddOpenApi();
-
 var app = builder.Build();
 
 // using(var scope = app.Services.CreateScope())
@@ -99,7 +97,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 
 app.UseRouting();   
 app.UseAuthentication();
