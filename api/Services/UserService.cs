@@ -172,5 +172,11 @@ namespace api.Services
 
             return address.ToAddressDto();
         }
+
+        public async Task<IReadOnlyList<UserDto>> GetAllAdminsAync()
+        {
+            var admins = await _userRepo.GetAdminsAsync();
+            return admins.Select(UserMapper.ToDto).ToList();
+        }
     }
 }

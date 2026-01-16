@@ -23,5 +23,6 @@ namespace api.Interfaces
         Task<UserAddressDto?> DeleteUserAddressAsync(Guid userId,Guid addressId);
         Task<UserAddressDto>UpdateAddressAsync(Guid addressId, UpdateAddress update);
         Task<UserAddressDto> UpdateAddressDefaultAsync(Guid addressId);
+        Task<IReadOnlyList<UserDto>> GetAllAdminsAync();
     }
 }

@@ -6,6 +6,7 @@ using api.Data;
 using api.Dto;
 using api.Interfaces;
 using api.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Repository
@@ -96,6 +97,23 @@ namespace api.Repository
         public async Task<UserAddress?> GetAddressByIdAsync(Guid addressId)
         {
             return await _dbContext.UserAddresses.FirstOrDefaultAsync(a => a.Id == addressId);
+        }
+
+        public async Task<UserRole?> GetUserRoleAsync(Guid userId)
+        {
+            return await _dbContext.Users
+                .Where(x => x.Id == userId)
+                .Select(x => (UserRole?)x.Role)
+                .FirstOrDefaultAsync();
+
+        }
+
+        public async Task<IReadOnlyList<User>> GetAdminsAsync()
+        {
+            return await _dbContext.Users
+                .Where(x => x.Role == UserRole.Admin)
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }
