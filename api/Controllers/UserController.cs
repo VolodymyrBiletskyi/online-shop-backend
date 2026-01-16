@@ -113,5 +113,21 @@ namespace api.Controllers
             var address = await _userService.UpdateAddressDefaultAsync(addressId);
             return Ok(address);
         }
+        
+        [Authorize(Roles ="Admin")]
+        [HttpGet("admins")]
+        public async Task<ActionResult<UserDto>> GetAllAdmins()
+        {
+            var admins = await _userService.GetAllAdminsAync();
+            return Ok(admins);
+        }
+
+        [Authorize]
+        [HttpGet("whoami")]
+        public IActionResult WhoAmI()
+        {
+            return Ok(User.Claims.Select(c => new { c.Type, c.Value }));
+        }
+
     }
 }

@@ -2,7 +2,9 @@ using api.Data;
 using api.Extensions;
 using api.Interfaces;
 using api.Jwt;
+using api.Middleware;
 using api.Repository;
+using api.Seeders;
 using api.Services;
 using api.Validators;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +24,8 @@ var dataSource = dsBuilder.Build();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(dataSource));
-
+    
+builder.Services.AddMemoryCache();
 // DI
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -44,6 +47,8 @@ builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IUserValidator, UserValidator>();
 builder.Services.AddScoped<IProductValidator, ProductValidator>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<Middleware>();
+builder.Services.AddHostedService<AdminSeed>();
 
 builder.Services.AddApiAuthentication(builder.Configuration);
 
@@ -105,6 +110,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseRouting();   
 app.UseAuthentication();
+
+app.UseMiddleware<Middleware>();
+
 app.UseAuthorization();
 
 app.MapControllers();

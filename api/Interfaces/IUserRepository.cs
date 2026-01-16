@@ -21,5 +21,7 @@ namespace api.Interfaces
         Task<IReadOnlyList<UserAddress>> GetAllUserAddresses(Guid userId);
         Task<UserAddress?> DeleteAddressAsync(Guid userId,Guid addressId);
         Task<UserAddress?> GetAddressByIdAsync(Guid addressId);
+        Task<UserRole?> GetUserRoleAsync(Guid userId);
+        Task<IReadOnlyList<User>> GetAdminsAsync();
     }
 }
