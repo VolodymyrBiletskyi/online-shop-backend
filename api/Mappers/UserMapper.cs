@@ -36,6 +36,24 @@ namespace api.Mappers
             };
         }
 
+        public static User Create(
+            string email,
+            string fullName,
+            string passwordHash,
+            UserRole role
+        )
+        {
+            return new User
+            {
+                Id = Guid.NewGuid(),
+                Email = email,
+                FullName = fullName,
+                Role = role,
+                CreatedAt = DateTime.UtcNow,
+                PasswordHash = passwordHash
+            };
+        }
+
         public static void ApplyUpdateFrom(this User entity, UpdateUserDto dto)
         {
             entity.Email = dto.Email;
@@ -75,7 +93,7 @@ namespace api.Mappers
 
         public static void UpdateAddress(this UserAddress entity, UpdateAddress address)
         {
-            entity.Country =  address.Country ?? entity.Country;
+            entity.Country = address.Country ?? entity.Country;
             entity.City = address.City ?? entity.City;
             entity.Street = address.Street ?? entity.Street;
             entity.NumOfObject = address.NumOfObject ?? entity.NumOfObject;
