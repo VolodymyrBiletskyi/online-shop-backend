@@ -9,7 +9,6 @@ using api.Interfaces;
 using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens.Experimental;
 
 namespace api.Controllers
 {
@@ -24,7 +23,7 @@ namespace api.Controllers
             _userService = userService;
         }
 
-        [HttpGet] 
+        [HttpGet]
         public async Task<ActionResult<List<UserDto>>> GetAll()
         {
             var users = await _userService.GetAllAsync();
@@ -74,7 +73,7 @@ namespace api.Controllers
         }
 
         [HttpPost("{userId}/address")]
-        public async Task<ActionResult<UserAddressDto>> AddUserAddress([FromRoute] Guid userId,[FromBody] AddUserAddress address)
+        public async Task<ActionResult<UserAddressDto>> AddUserAddress([FromRoute] Guid userId, [FromBody] AddUserAddress address)
         {
             var userAddress = await _userService.AddAddressAsync(userId, address);
             return Ok(userAddress);
@@ -93,28 +92,28 @@ namespace api.Controllers
             var addresses = await _userService.GetAllUserAddressesAsync(userId);
             return Ok(addresses);
         }
-        
+
         [HttpDelete("{userId}/addresses/{addressId}")]
-        public async Task<ActionResult<UserAddressDto>> DeleteUserAddress([FromRoute]Guid userId, [FromRoute] Guid addressId)
+        public async Task<ActionResult<UserAddressDto>> DeleteUserAddress([FromRoute] Guid userId, [FromRoute] Guid addressId)
         {
-            var userAddress = await _userService.DeleteUserAddressAsync(userId,addressId);
+            var userAddress = await _userService.DeleteUserAddressAsync(userId, addressId);
             return Ok(userAddress);
         }
 
         [HttpPatch("{addressId:guid}")]
-        public async Task<ActionResult> UpdateUserAddress([FromRoute] Guid addressId,[FromBody] UpdateAddress update)
+        public async Task<ActionResult> UpdateUserAddress([FromRoute] Guid addressId, [FromBody] UpdateAddress update)
         {
-            var userAddress = await _userService.UpdateAddressAsync(addressId,update);
+            var userAddress = await _userService.UpdateAddressAsync(addressId, update);
             return Ok(userAddress);
         }
         [HttpPatch("{addressId:guid}/set-default")]
-        public async Task<ActionResult<UserAddressDto>>SetDefaultAddress([FromRoute] Guid addressId)
+        public async Task<ActionResult<UserAddressDto>> SetDefaultAddress([FromRoute] Guid addressId)
         {
             var address = await _userService.UpdateAddressDefaultAsync(addressId);
             return Ok(address);
         }
-        
-        [Authorize(Roles ="Admin")]
+
+        [Authorize(Roles = "Admin")]
         [HttpGet("admins")]
         public async Task<ActionResult<UserDto>> GetAllAdmins()
         {

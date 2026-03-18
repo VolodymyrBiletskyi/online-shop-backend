@@ -3,6 +3,7 @@ using api.Dto;
 using api.Contracts.Users;
 using api.Interfaces;
 using api.Mappers;
+using api.Models;
 
 
 namespace api.Services
@@ -36,14 +37,15 @@ namespace api.Services
         {
             _validator.ValidateCreateUser(dto);
 
-            var email = dto.Email.Trim().ToLowerInvariant(); 
+            var email = dto.Email.Trim().ToLowerInvariant();
+
             if (await _userRepo.GetByEmailAsync(email) is not null)
                 throw new InvalidOperationException("Email is already taken");
-        
+
             var passwordHash = _passwordHasher.Hash(dto.Password);
 
-            var entity = UserMapper.ToEntity(dto,passwordHash);
-            
+            var entity = UserMapper.ToEntity(dto, passwordHash);
+
             await _userRepo.AddAsync(entity);
             await _userRepo.SaveChangesAsync();
             return UserMapper.ToDto(entity);
@@ -71,7 +73,7 @@ namespace api.Services
 
             await _userRepo.SaveChangesAsync();
             return existingUser.ToDto();
-            
+
         }
 
         public async Task<bool> DeleteAsync(Guid id)
@@ -83,7 +85,7 @@ namespace api.Services
             return true;
         }
 
-        public async Task<UserAddressDto> AddAddressAsync(Guid userId,AddUserAddress address)
+        public async Task<UserAddressDto> AddAddressAsync(Guid userId, AddUserAddress address)
         {
             var user = await _userRepo.GetByIdAsync(userId)
                 ?? throw new InvalidOperationException("User does not exist");
@@ -92,18 +94,18 @@ namespace api.Services
             var numOfObject = address.NumOfObject;
             var city = address.City;
 
-            var exists = await _userRepo.AddressExistsAsync(userId,street,numOfObject,city);
-            if(exists)
+            var exists = await _userRepo.AddressExistsAsync(userId, street, numOfObject, city);
+            if (exists)
                 throw new InvalidOperationException("This address already added");
 
             var userAddress = UserMapper.ToAddressEntity(address);
             userAddress.UserId = userId;
 
             var existingDefault = await _userRepo.GetDefaultUserAddressAsync(userId);
-            if(address.IsDefault == true && existingDefault !=null) 
+            if (address.IsDefault == true && existingDefault != null)
                 throw new InvalidOperationException("User can not have more then 1 default address");
 
-            await  _userRepo.AddAddressAsync(userAddress);
+            await _userRepo.AddAddressAsync(userAddress);
             await _userRepo.SaveChangesAsync();
 
             return userAddress.ToAddressDto();
@@ -126,7 +128,7 @@ namespace api.Services
             var addresses = await _userRepo.GetAllUserAddresses(userId);
 
             return addresses.Select(UserMapper.ToAddressDto).ToList();
-            
+
         }
 
         public async Task<UserAddressDto?> DeleteUserAddressAsync(Guid userId, Guid addressId)
@@ -137,7 +139,7 @@ namespace api.Services
             var existingAddress = await _userRepo.GetAddressByIdAsync(addressId)
                 ?? throw new InvalidOperationException("Address does not exist");
 
-            var address = await _userRepo.DeleteAddressAsync(userId,addressId)
+            var address = await _userRepo.DeleteAddressAsync(userId, addressId)
                 ?? throw new InvalidOperationException("Failed to delete address");
             return address.ToAddressDto();
         }
@@ -158,12 +160,12 @@ namespace api.Services
             var address = await _userRepo.GetAddressByIdAsync(addressId)
                 ?? throw new InvalidOperationException("Address does not exist");
 
-            if(address.IsDefault)
+            if (address.IsDefault)
                 throw new InvalidOperationException("This address is already the default one");
 
             var currentDefault = await _userRepo.GetDefaultUserAddressAsync(address.UserId);
 
-            if(currentDefault !=null)
+            if (currentDefault != null)
                 currentDefault.IsDefault = false;
 
             address.IsDefault = true;
@@ -177,6 +179,35 @@ namespace api.Services
         {
             var admins = await _userRepo.GetAdminsAsync();
             return admins.Select(UserMapper.ToDto).ToList();
+        }
+
+        public async Task EnsureAdminExistsAsync(string email, string password)
+        {
+            var hasAdmin = await _userRepo.AnyAdminExist(UserRole.Admin);
+            if (hasAdmin) return;
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+                throw new InvalidOperationException("admin email/password are required");
+
+            var normalEmail = email.Trim().ToLowerInvariant();
+            var existing = await _userRepo.GetByEmailAsync(normalEmail);
+
+            if (existing is not null)
+            {
+                existing.Role = UserRole.Admin;
+                await _userRepo.SaveChangesAsync();
+                return;
+            }
+            var passwordHash = _passwordHasher.Hash(password);
+
+            var admin = UserMapper.Create(
+                normalEmail,
+                "Admin",
+                passwordHash,
+                UserRole.Admin
+            );
+            await _userRepo.AddAsync(admin);
+            await _userRepo.SaveChangesAsync();
         }
     }
 }

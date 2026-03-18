@@ -33,7 +33,7 @@ namespace api.Repository
 
         public Task<User?> GetByIdAsync(Guid id)
         {
-            return _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id); 
+            return _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public Task AddAsync(User entity)
@@ -87,7 +87,7 @@ namespace api.Repository
         {
             var userAddress = await _dbContext.UserAddresses
             .FirstOrDefaultAsync(a => a.Id == addressId && a.UserId == userId);
-            if(userAddress == null) return null;
+            if (userAddress == null) return null;
 
             _dbContext.UserAddresses.Remove(userAddress);
             await _dbContext.SaveChangesAsync();
@@ -114,6 +114,12 @@ namespace api.Repository
                 .Where(x => x.Role == UserRole.Admin)
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+        public async Task<bool> AnyAdminExist(UserRole role)
+        {
+            return await _dbContext.Users
+            .AnyAsync(u => u.Role == role);
         }
     }
 }

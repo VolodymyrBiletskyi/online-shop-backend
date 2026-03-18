@@ -27,50 +27,31 @@ namespace api.Seeders
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             using var scope = _serviceProvider.CreateScope();
-
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var _passwordHash = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
-
-            var hasAdmin = await db.Users.AsNoTracking()
-                .AnyAsync(u => u.Role == UserRole.Admin);
-            
-            if(hasAdmin) return;
+            var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
 
             var email = _config["SeedAdmin:Email"];
             var password = _config["SeedAdmin:Password"];
 
-            if(string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
                 _logger.LogWarning("SeedAdmin skipped: SeedAdmin:Email/Password not configured.");
                 return;
             }
-            
-            var existing =  await db.Users.SingleOrDefaultAsync(u => u.Email == email);
-            if(existing is not null)
-            {
-                existing.Role = UserRole.Admin;
-                await db.SaveChangesAsync();
 
-                _logger.LogWarning("Seed admin: existing user promoted to Admin. Email ={Emai}",email);
-                return;
+            try
+            {
+                await userService.EnsureAdminExistsAsync(email, password);
+                _logger.LogInformation("AdminEnsuredSuccessfully");
             }
-            
-            var admin = new User
+            catch (Exception ex)
             {
-                Id = Guid.NewGuid(),
-                FullName = "Admin",
-                Email = email,
-                Role = UserRole.Admin,
-                PasswordHash = _passwordHash.Hash(password)
-            };
+                _logger.LogError(ex, "Failed to seed admin");
+                throw;
+            }
 
-            db.Users.Add(admin);
-            await db.SaveChangesAsync();
-
-            _logger.LogWarning("Seed admin created. Email={Email}",email);
         }
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
-        
+
     }
 }

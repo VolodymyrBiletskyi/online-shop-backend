@@ -17,12 +17,13 @@ namespace api.Interfaces
         Task<UserDto?> GetByIdAsync(Guid id);
         Task<UserDto> UpdateAsync(Guid id, UpdateUserDto updateDto);
         Task<bool> DeleteAsync(Guid id);
-        Task<UserAddressDto> AddAddressAsync(Guid userId,AddUserAddress address);
+        Task<UserAddressDto> AddAddressAsync(Guid userId, AddUserAddress address);
         Task<UserAddressDto?> GetDefaultUserAddressAsync(Guid userId);
         Task<IReadOnlyList<UserAddressDto>> GetAllUserAddressesAsync(Guid userId);
-        Task<UserAddressDto?> DeleteUserAddressAsync(Guid userId,Guid addressId);
-        Task<UserAddressDto>UpdateAddressAsync(Guid addressId, UpdateAddress update);
+        Task<UserAddressDto?> DeleteUserAddressAsync(Guid userId, Guid addressId);
+        Task<UserAddressDto> UpdateAddressAsync(Guid addressId, UpdateAddress update);
         Task<UserAddressDto> UpdateAddressDefaultAsync(Guid addressId);
         Task<IReadOnlyList<UserDto>> GetAllAdminsAync();
+        Task EnsureAdminExistsAsync(string email, string password);
     }
 }
