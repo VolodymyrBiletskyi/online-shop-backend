@@ -16,13 +16,18 @@ namespace api.Models
         public string Slug { get; set; } = string.Empty;
         public string? Description { get; set; }
         public int SortOrder { get; set; }
+        public string Sku { get; set; } = null!;
+        public Dictionary<string, string> Attributes { get; set; } = new();
 
         public decimal BasePrice { get; set; }
         public bool IsActive { get; set; } = true;
+        public int Available { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
-        public ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
         public ICollection<CartItem> Items { get; set; } = new List<CartItem>();
+        public ICollection<Inventory> InventoryItems { get; set; } = new List<Inventory>();
+        public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
+        public ICollection<OrderItem> OrderItem { get; set; } = new List<OrderItem>();
     }
 }

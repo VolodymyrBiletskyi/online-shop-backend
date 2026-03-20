@@ -11,7 +11,7 @@ namespace api.Interfaces
         Task<IReadOnlyList<Inventory>> GetAllAsync();
         Task CreateAsync(Inventory entity);
         Task<Inventory?> GetByIdAsync(Guid id);
-        Task<Inventory?> GetByVariantAsync(Guid variantId);
+        Task<Inventory?> GetByProductAsync(Guid productId);
         Task<Inventory?> DeleteAsync(Guid id);
         Task<int> SaveChangesAsync();
     }

@@ -24,7 +24,7 @@ var dataSource = dsBuilder.Build();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(dataSource));
-    
+
 builder.Services.AddMemoryCache();
 // DI
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -33,16 +33,14 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IProductVariantRepository, ProductVariantRepository>();
-builder.Services.AddScoped<IVariantService, VariantService>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
-builder.Services.AddScoped<ICartRepository,CartRepository>();
-builder.Services.AddScoped<ICartService,CartService>();
-builder.Services.AddScoped<IOrderRepository,OrderRepository>();
-builder.Services.AddScoped<IOrderService,OrderService>();
-builder.Services.AddScoped<IRefreshTokenRepository,RefreshTokenRepository>();
-builder.Services.AddScoped<IAuthService,AuthService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IUserValidator, UserValidator>();
 builder.Services.AddScoped<IProductValidator, ProductValidator>();
@@ -86,6 +84,7 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
@@ -108,13 +107,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 
-app.UseRouting();   
+app.UseRouting();
 app.UseAuthentication();
 
 app.UseMiddleware<Middleware>();
 
 app.UseAuthorization();
 
+app.MapOpenApi();
 app.MapControllers();
 
 app.Run();

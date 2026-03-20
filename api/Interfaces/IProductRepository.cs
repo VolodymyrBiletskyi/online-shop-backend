@@ -13,10 +13,8 @@ namespace api.Interfaces
         Task CrateAsync(Product entity);
         Task<int> SaveAsync();
         Task<Product?> DeleteAsync(Guid id);
-        Task<Product?> GetWithVariantsAsync(Guid id);
         Task<Product?> GetBySlugAsync(string slug);
         Task<bool> SlugExistsAsync(string slug);
-        Task<ProductVariant?> GetVariantAsync(Guid variantId);
-        Task<decimal> GetPriceSnapshotAsync(Guid productId,Guid? variantId);
+        Task<decimal> GetPriceSnapshotAsync(Guid productId);
     }
 }

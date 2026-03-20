@@ -13,42 +13,42 @@ namespace api.Controllers
     [Route("api/inventory")]
     public class InventoryController : ControllerBase
     {
-        private readonly IInventoryService _inentoryService;
+        private readonly IInventoryService _inventoryService;
 
         public InventoryController(IInventoryService inventoryService)
         {
-            _inentoryService = inventoryService;
+            _inventoryService = inventoryService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<InventoryDto>>> GetAll()
         {
-            var inventory = await _inentoryService.GetAllAsync();
+            var inventory = await _inventoryService.GetAllAsync();
             return Ok(inventory);
         }
 
         [HttpPost("increase")]
-        public Task<InventoryDto> Increase(Guid variantId, [FromBody] ChangeInventory dto)
+        public Task<InventoryDto> Increase(Guid productId, [FromBody] ChangeInventory dto)
         {
-            return _inentoryService.IncreaseOnHandAsync(variantId, dto);
+            return _inventoryService.IncreaseOnHandAsync(productId, dto);
         }
 
         [HttpPost("reserve")]
-        public Task<InventoryDto> Reserve(Guid variantId, [FromBody] ChangeInventory dto)
+        public Task<InventoryDto> Reserve(Guid productId, [FromBody] ChangeInventory dto)
         {
-            return _inentoryService.ReserveAsync(variantId, dto);
+            return _inventoryService.ReserveAsync(productId, dto);
         }
 
         [HttpPost("release")]
-        public Task<InventoryDto> Release(Guid variantId, [FromBody] ChangeInventory dto)
+        public Task<InventoryDto> Release(Guid productId, [FromBody] ChangeInventory dto)
         {
-            return _inentoryService.ReleaseAsync(variantId, dto);
+            return _inventoryService.ReleaseAsync(productId, dto);
         }
 
         [HttpPost("commit")]
-        public Task<InventoryDto> Commit(Guid variantId, [FromBody] ChangeInventory dto)
+        public Task<InventoryDto> Commit(Guid productId, [FromBody] ChangeInventory dto)
         {
-            return _inentoryService.CommitAsync(variantId, dto);
+            return _inventoryService.CommitAsync(productId, dto);
         }
     }
 }

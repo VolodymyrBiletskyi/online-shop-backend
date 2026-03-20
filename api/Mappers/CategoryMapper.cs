@@ -22,7 +22,7 @@ namespace api.Mappers
             };
         }
 
-        public static void ApplyUpdate(this Category entity,UpdateCategory updateCategory)
+        public static void ApplyUpdate(this Category entity, UpdateCategory updateCategory)
         {
             entity.Name = updateCategory.Name;
             entity.Slug = string.IsNullOrWhiteSpace(updateCategory.Slug)
@@ -39,14 +39,12 @@ namespace api.Mappers
             {
                 Id = Guid.NewGuid(),
                 Name = createCategory.Name,
-                Slug =string.IsNullOrWhiteSpace(createCategory.Slug)
-                    ?GenerateSlug(createCategory.Name)
-                    :createCategory.Slug,
+                Slug = GenerateSlug(createCategory.Name),
                 SortOrder = createCategory.SortOrder,
                 ParentId = createCategory.ParentId
             };
         }
-        
+
         private static string GenerateSlug(string name)
             => name.Trim().ToLowerInvariant()
                     .Replace(' ', '-')

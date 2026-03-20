@@ -13,14 +13,12 @@ namespace api.Models
         public Cart Cart { get; set; } = null!;
         public Guid ProductId { get; set; }
         public Product Product { get; set; } = null!;
-        public Guid? VariantId { get; set; }
-        public ProductVariant? ProductVariant { get; set; }
 
         public int Quantity { get; set; }
         public decimal UnitPriceSnapshot { get; set; }
-        public string ProductNameSnapshot {get;set;} = null!;
+        public string ProductNameSnapshot { get; set; } = null!;
         public string SkuSnapshot { get; set; } = null!;
-        public string? AttributesSnapshot { get; set; } 
-        
+        public string? AttributesSnapshot { get; set; }
+
     }
 }

@@ -42,10 +42,10 @@ namespace api.Repository
             return _dbContext.Inventory.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<Inventory?> GetByVariantAsync(Guid variantId)
+        public Task<Inventory?> GetByProductAsync(Guid productId)
         {
-            var byVariant = _dbContext.Inventory.Where(i => i.VariantId == variantId);
-            return byVariant.FirstOrDefaultAsync();
+            var byProduct = _dbContext.Inventory.Where(i => i.ProductId == productId);
+            return byProduct.FirstOrDefaultAsync();
         }
 
         public Task<int> SaveChangesAsync()

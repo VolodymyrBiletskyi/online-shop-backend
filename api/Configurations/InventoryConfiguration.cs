@@ -16,12 +16,12 @@ namespace api.Configurations
 
             builder.HasKey(x => x.Id);
 
-            builder.HasOne(a => a.ProductVariant)
+            builder.HasOne(a => a.Product)
                 .WithMany(a => a.InventoryItems)
-                .HasForeignKey(a => a.VariantId)
+                .HasForeignKey(a => a.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasIndex(a => a.VariantId).IsUnique();
+            builder.HasIndex(a => a.ProductId).IsUnique();
         }
     }
 }

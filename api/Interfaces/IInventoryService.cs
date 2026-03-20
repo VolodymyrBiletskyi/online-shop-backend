@@ -11,9 +11,9 @@ namespace api.Interfaces
     public interface IInventoryService
     {
         Task<IReadOnlyList<InventoryDto>> GetAllAsync();
-        Task<InventoryDto> IncreaseOnHandAsync(Guid variantId, ChangeInventory changeInventory);
-        Task<InventoryDto> ReserveAsync(Guid variantId, ChangeInventory changeInventory);
-        Task<InventoryDto> ReleaseAsync(Guid variantId, ChangeInventory changeInventory);
-        Task<InventoryDto> CommitAsync(Guid variantId, ChangeInventory changeInventory);
+        Task<InventoryDto> IncreaseOnHandAsync(Guid productId, ChangeInventory changeInventory);
+        Task<InventoryDto> ReserveAsync(Guid productId, ChangeInventory changeInventory);
+        Task<InventoryDto> ReleaseAsync(Guid productId, ChangeInventory changeInventory);
+        Task<InventoryDto> CommitAsync(Guid productId, ChangeInventory changeInventory);
     }
 }

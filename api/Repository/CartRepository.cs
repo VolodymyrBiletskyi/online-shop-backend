@@ -46,25 +46,23 @@ namespace api.Repository
             return _dbContext.Cart
                 .Include(i => i.Items)
                     .ThenInclude(i => i.Product)
-                .Include(i => i.Items)
-                    .ThenInclude(i => i.ProductVariant)
                 .FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
         public async Task<CartItem?> GetByIdAsync(Guid itemId)
         {
-           return await _dbContext.CartItems.FirstOrDefaultAsync(x => x.Id == itemId);
+            return await _dbContext.CartItems.FirstOrDefaultAsync(x => x.Id == itemId);
         }
 
         public async Task<CartItem?> RemoveItemAsync(Guid itemId)
         {
             var item = await GetByIdAsync(itemId);
 
-            if (item is null) return null; 
-               
+            if (item is null) return null;
+
             _dbContext.CartItems.Remove(item);
             return item;
-            
+
         }
 
         public async Task<int> SaveChangesAsync()

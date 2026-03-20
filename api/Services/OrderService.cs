@@ -17,7 +17,7 @@ namespace api.Services
         private readonly ICartRepository _cartRepo;
         private readonly IUserRepository _userRepo;
 
-        public OrderService(IOrderRepository orderRepo,ICartRepository cartRepo,IUserRepository userRepo)
+        public OrderService(IOrderRepository orderRepo, ICartRepository cartRepo, IUserRepository userRepo)
         {
             _orderRepo = orderRepo;
             _cartRepo = cartRepo;
@@ -32,7 +32,7 @@ namespace api.Services
             if (order.UserId != userId)
                 throw new UnauthorizedAccessException("You cannot cancel this order");
             if (order.Status == OrderStatus.Delivered)
-                throw new InvalidOperationException("Delivere orders cannot be cancelled ");
+                throw new InvalidOperationException("Deliver orders cannot be cancelled ");
 
             if (order.Status == OrderStatus.Cancelled)
                 throw new InvalidOperationException("Order is already cancelled");
@@ -46,7 +46,7 @@ namespace api.Services
 
         }
 
-        public async Task<OrderDto> CreateAsync(Guid userId,CreateOrder createOrder)
+        public async Task<OrderDto> CreateAsync(Guid userId, CreateOrder createOrder)
         {
             var cart = await _cartRepo.GetActiveCartByUserAsync(userId)
                 ?? throw new InvalidOperationException("Cart is empty or does not exist");
@@ -54,9 +54,9 @@ namespace api.Services
             var userAddress = await _userRepo.GetAddressByIdAsync(createOrder.UserAddressId)
                 ?? throw new InvalidOperationException("Address not found");
 
-            if(userAddress.UserId != userId)
+            if (userAddress.UserId != userId)
                 throw new InvalidOperationException("Address does not belong to this user");
-            
+
             var orderAddress = new OrderAddress
             {
                 Id = Guid.NewGuid(),
@@ -74,7 +74,7 @@ namespace api.Services
             decimal ship = 0;
             decimal total = subtotal - discount + tax + ship;
 
-            var ordernumber = $"ORD-{DateTime.UtcNow:yyyyMMddHHmmss}-{Random.Shared.Next(1000,9999)}";
+            var orderNumber = $"ORD-{DateTime.UtcNow:yyyyMMddHHmmss}-{Random.Shared.Next(1000, 9999)}";
 
             var order = new Order
             {
@@ -82,7 +82,7 @@ namespace api.Services
                 UserId = userId,
                 OrderAddressId = orderAddress.Id,
                 OrderAddress = orderAddress,
-                OrderNumber = ordernumber,
+                OrderNumber = orderNumber,
 
                 Status = OrderStatus.Created,
                 PaymentStatus = PaymentStatus.Pending,
@@ -97,20 +97,19 @@ namespace api.Services
                 CreatedAt = DateTime.UtcNow,
                 OrderItems = new List<OrderItem>()
             };
-            
-            foreach(var cartitem in cart.Items)
+
+            foreach (var cartItem in cart.Items)
             {
                 order.OrderItems.Add(new OrderItem
                 {
                     Id = Guid.NewGuid(),
                     OrderId = order.Id,
-                    ProductId = cartitem.ProductId,
-                    VariantId = cartitem.VariantId,
-                    ProductNameSnapshot = cartitem.ProductNameSnapshot,
-                    SkuSnapshot = cartitem.SkuSnapshot,
-                    AttributesSnapshot = cartitem.AttributesSnapshot,
-                    Quantity = cartitem.Quantity,
-                    UnitPrice = cartitem.UnitPriceSnapshot
+                    ProductId = cartItem.ProductId,
+                    ProductNameSnapshot = cartItem.ProductNameSnapshot,
+                    SkuSnapshot = cartItem.SkuSnapshot,
+                    AttributesSnapshot = cartItem.AttributesSnapshot,
+                    Quantity = cartItem.Quantity,
+                    UnitPrice = cartItem.UnitPriceSnapshot
                 });
             }
 
@@ -137,7 +136,7 @@ namespace api.Services
             var address = await _orderRepo.GetOrderAddress(orderId);
 
             return address.ToDto();
-            
+
         }
 
         public async Task<IReadOnlyList<OrderDto>> GetUserOrdersAsync(Guid userId)

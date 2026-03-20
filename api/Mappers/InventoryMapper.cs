@@ -13,7 +13,7 @@ namespace api.Mappers
         {
             return new InventoryDto
             {
-                VariantId = entity.VariantId,
+                ProductId = entity.ProductId,
                 QuantityOnHand = entity.QuantityOnHand,
                 QuantityReserved = entity.QuantityReserved
             };
@@ -23,7 +23,7 @@ namespace api.Mappers
         {
             return new Inventory
             {
-                VariantId = dto.VariantId,
+                ProductId = dto.ProductId,
                 QuantityOnHand = dto.QuantityOnHand,
                 QuantityReserved = dto.QuantityReserved
             };

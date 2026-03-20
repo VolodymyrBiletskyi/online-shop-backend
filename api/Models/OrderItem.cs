@@ -13,11 +13,8 @@ namespace api.Models
         public Order Order { get; set; } = null!;
         public Guid ProductId { get; set; }
         public Product Product { get; set; } = null!;
-        public Guid? VariantId { get; set; }
-        public ProductVariant ProductVariant { get; set; } = null!;
-        
+
         public string ProductNameSnapshot { get; set; } = null!;
-        public string? VariantName { get; set; }
         public string SkuSnapshot { get; set; } = null!;
         public string? AttributesSnapshot { get; set; }
 
