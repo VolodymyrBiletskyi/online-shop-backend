@@ -26,7 +26,6 @@ namespace api.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<CartItem> Items { get; set; } = new List<CartItem>();
-        public ICollection<Inventory> InventoryItems { get; set; } = new List<Inventory>();
         public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
         public ICollection<OrderItem> OrderItem { get; set; } = new List<OrderItem>();
     }

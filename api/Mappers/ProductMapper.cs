@@ -24,6 +24,7 @@ namespace api.Mappers
                 SortOrder = product.SortOrder,
                 BasePrice = product.BasePrice,
                 IsActive = product.IsActive,
+                Available = product.Available,
                 CreatedAt = product.CreatedAt
 
             };
@@ -40,6 +41,7 @@ namespace api.Mappers
             entity.SortOrder = updateProduct.SortOrder;
             entity.BasePrice = updateProduct.BasePrice;
             entity.IsActive = updateProduct.IsActive;
+            entity.Available = updateProduct.Available;
         }
 
         public static Product ToEntity(this CreateProduct createProduct)
@@ -60,6 +62,7 @@ namespace api.Mappers
                 Sku = string.IsNullOrWhiteSpace(createProduct.Sku)
                     ? SkuGenerator.Generate(createProduct.Name)
                     : createProduct.Sku.Trim().ToUpperInvariant(),
+                Available = createProduct.Available,
                 Attributes = createProduct.Attributes ?? new()
             };
         }

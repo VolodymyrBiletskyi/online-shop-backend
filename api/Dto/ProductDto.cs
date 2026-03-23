@@ -19,11 +19,11 @@ namespace api.Dto
         public string? ThumbnailUrl { get; set; }
         public decimal BasePrice { get; set; }
         public bool IsActive { get; set; }
+        public int Available { get; set; }
+        public DateTime CreatedAt { get; set; }
         [DefaultValue("")]
         public string Sku { get; set; } = null!;
-        public Dictionary<string, string> Attributes { get; set; } = new();
-        public int Available { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public Dictionary<string, string> Attributes { get; set; } = new();
     }
 }

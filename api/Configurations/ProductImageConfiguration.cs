@@ -20,18 +20,8 @@ namespace api.Configurations
                 .HasForeignKey(a => a.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(a => a.Product)
-                .WithMany(a => a.Images)
-                .HasForeignKey(a => a.ProductId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-
             builder.HasIndex(x => new { x.ProductId, x.IsPrimary })
                 .HasFilter("\"IsPrimary\" = true")
-                .IsUnique();
-
-            builder.HasIndex(x => new { x.ProductId, x.IsPrimary })
-                .HasFilter("\"ProductId\"  IS NOT NULL AND \"IsPrimary\" = true")
                 .IsUnique();
         }
     }

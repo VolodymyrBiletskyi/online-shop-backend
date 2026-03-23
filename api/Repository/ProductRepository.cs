@@ -32,9 +32,9 @@ namespace api.Repository
             .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task CrateAsync(Product entity)
+        public Task CreateAsync(Product entity)
         {
-            return _dbContext.AddAsync(entity).AsTask();
+            return _dbContext.Products.AddAsync(entity).AsTask();
         }
 
         public async Task<int> SaveAsync()
@@ -44,13 +44,12 @@ namespace api.Repository
 
         public async Task<Product?> DeleteAsync(Guid id)
         {
-            var productModel = await GetByIdAsync(id);
+            var productModel = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
 
             if (productModel == null) return null;
 
             _dbContext.Products.Remove(productModel);
 
-            await _dbContext.SaveChangesAsync();
             return productModel;
         }
 
@@ -67,16 +66,24 @@ namespace api.Repository
 
         public async Task<decimal> GetPriceSnapshotAsync(Guid productId)
         {
-
-            var productPrice = await _dbContext.Products
-                .Where(p => p.Id == productId)
-                .Select(p => p.BasePrice)
-                .FirstOrDefaultAsync();
-
-            if (productPrice == default)
+            var exists = await _dbContext.Products.AnyAsync(p => p.Id == productId);
+            if (!exists)
                 throw new InvalidOperationException("Product does not exist");
 
-            return productPrice;
+            return await _dbContext.Products
+                .Where(p => p.Id == productId)
+                .Select(p => p.BasePrice)
+                .SingleAsync();
+        }
+
+        public Task<bool> IsSkuTakenAsync(string sku, Guid? excludeProductId = null)
+        {
+            var query = _dbContext.Products.Where(p => p.Sku == sku);
+
+            if (excludeProductId.HasValue)
+                query = query.Where(p => p.Id != excludeProductId.Value);
+
+            return query.AnyAsync();
         }
     }
 }
