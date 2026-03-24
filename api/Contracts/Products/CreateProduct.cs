@@ -12,9 +12,13 @@ namespace api.Contracts.Products
         public string Name { get; set; } = null!;
         [DefaultValue("")]
         public string? Slug { get; set; } = string.Empty;
+        [DefaultValue("")]
+        public string Sku { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
         public int SortOrder { get; set; } = 0;
         public decimal BasePrice { get; set; }
+        public int Available { get; set; }
+        public Dictionary<string, string> Attributes { get; set; } = new();
         public bool IsActive { get; set; } = true;
     }
 }

@@ -13,7 +13,7 @@ namespace api.Configurations
         public void Configure(EntityTypeBuilder<CartItem> builder)
         {
             builder.ToTable("CartItems");
-            
+
             builder.HasKey(x => x.Id);
 
             builder.HasOne(a => a.Cart)
@@ -27,13 +27,6 @@ namespace api.Configurations
                 .WithMany()
                 .HasForeignKey(x => x.ProductId);
 
-            builder.HasIndex(x => x.VariantId);
-
-            builder.HasOne(x => x.ProductVariant)
-                .WithMany()
-                .HasForeignKey(x => x.VariantId);
-
-            builder.HasIndex(x => x.VariantId);
         }
     }
 }

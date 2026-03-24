@@ -16,5 +16,6 @@ namespace api.Contracts.Products
         public int SortOrder { get; set; } = 0;
         public decimal BasePrice { get; set; }
         public bool IsActive { get; set; } = true;
+        public int Available { get; set; }
     }
 }

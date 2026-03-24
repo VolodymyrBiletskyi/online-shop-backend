@@ -10,10 +10,8 @@ namespace api.Dto
     {
         public Guid OrderId { get; set; }
         public Guid ProductId { get; set; }
-        public Guid? VariantId { get; set; }
-        
+
         public string ProductNameSnapshot { get; set; } = null!;
-        public string? VariantName { get; set; }
         public string SkuSnapshot { get; set; } = null!;
         public string? AttributesSnapshot { get; set; }
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Contracts.Products;
-using api.Contracts.Variant;
 using api.Dto;
 using api.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -28,6 +27,7 @@ namespace api.Controllers
             var products = await _productService.GetAllAsync();
             return Ok(products);
         }
+
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<ProductDto>> GetById(Guid id)
         {
@@ -57,6 +57,6 @@ namespace api.Controllers
             return deleted ? NoContent() : NotFound();
         }
 
-        
+
     }
 }

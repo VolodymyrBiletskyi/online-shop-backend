@@ -14,7 +14,7 @@ namespace api.Services
     {
         private readonly ICartRepository _cartRepo;
         private readonly IProductRepository _productRepo;
-        public CartService(ICartRepository cartRepo,IProductRepository productRepo)
+        public CartService(ICartRepository cartRepo, IProductRepository productRepo)
         {
             _cartRepo = cartRepo;
             _productRepo = productRepo;
@@ -24,7 +24,7 @@ namespace api.Services
         {
             var cart = await _cartRepo.GetActiveCartByUserAsync(userId);
 
-            if(cart == null)
+            if (cart == null)
             {
                 cart = new Cart
                 {
@@ -32,11 +32,11 @@ namespace api.Services
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     Items = new List<CartItem>()
-                };  
+                };
                 await _cartRepo.CreateAsync(cart);
                 await _cartRepo.SaveChangesAsync();
 
-                
+
             }
             return cart;
         }
@@ -46,8 +46,7 @@ namespace api.Services
             var cart = await GetOrCreateCartAsync(userId);
 
             var existingItem = cart.Items.FirstOrDefault(i =>
-                i.ProductId == request.ProductId &&
-                i.VariantId == request.VariantId);
+                i.ProductId == request.ProductId);
 
             if (existingItem != null)
             {
@@ -56,30 +55,24 @@ namespace api.Services
             else
             {
                 var price = await _productRepo.GetPriceSnapshotAsync(
-                    request.ProductId,
-                    request.VariantId
+                    request.ProductId
                 );
                 var product = await _productRepo.GetByIdAsync(request.ProductId)
                     ?? throw new InvalidOperationException("Product not found");
-
-                ProductVariant? variant = null;
-                if (request.VariantId.HasValue)
-                    variant = await _productRepo.GetVariantAsync(request.VariantId.Value);
 
                 var newItem = new CartItem
                 {
                     CartId = cart.Id,
                     ProductId = request.ProductId,
-                    VariantId = request.VariantId,
                     Quantity = request.Quantity,
                     UnitPriceSnapshot = price,
-                    ProductNameSnapshot = variant?.Title ?? product.Name,
-                    SkuSnapshot = variant.Sku,
+                    ProductNameSnapshot = product.Name,
+                    SkuSnapshot = product.Sku,
                 };
 
                 await _cartRepo.AddAsync(newItem);
             }
-            
+
             await _cartRepo.SaveChangesAsync();
 
             var updatedCart = await _cartRepo.GetActiveCartByUserAsync(userId);
@@ -103,7 +96,7 @@ namespace api.Services
             return cart.ToDto();
         }
 
-        public async Task<CartDto> RemoveItemAsync(Guid userId, Guid itemId )
+        public async Task<CartDto> RemoveItemAsync(Guid userId, Guid itemId)
         {
             var cart = await GetOrCreateCartAsync(userId);
 
@@ -114,7 +107,7 @@ namespace api.Services
             await _cartRepo.RemoveItemAsync(itemId);
 
             await _cartRepo.SaveChangesAsync();
-            
+
             return cart.ToDto();
         }
 
@@ -123,7 +116,7 @@ namespace api.Services
             var cart = await GetOrCreateCartAsync(userId);
 
             var existingItem = cart.Items.FirstOrDefault(i => i.Id == itemId)
-                ??throw new InvalidOperationException("item not found");
+                ?? throw new InvalidOperationException("item not found");
 
             if (quantity <= 0)
             {

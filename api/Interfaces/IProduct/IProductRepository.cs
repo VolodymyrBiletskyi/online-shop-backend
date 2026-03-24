@@ -10,13 +10,13 @@ namespace api.Interfaces
     {
         Task<IReadOnlyList<Product>> GetAllAsync();
         Task<Product?> GetByIdAsync(Guid id);
-        Task CrateAsync(Product entity);
+        Task CreateAsync(Product entity);
         Task<int> SaveAsync();
         Task<Product?> DeleteAsync(Guid id);
-        Task<Product?> GetWithVariantsAsync(Guid id);
         Task<Product?> GetBySlugAsync(string slug);
         Task<bool> SlugExistsAsync(string slug);
-        Task<ProductVariant?> GetVariantAsync(Guid variantId);
-        Task<decimal> GetPriceSnapshotAsync(Guid productId,Guid? variantId);
+        Task<decimal> GetPriceSnapshotAsync(Guid productId);
+        Task<bool> IsSkuTakenAsync(string sku, Guid? excludeProductId = null);
+
     }
 }

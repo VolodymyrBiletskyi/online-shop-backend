@@ -6,7 +6,7 @@ using api.Models;
 
 namespace api.Interfaces
 {
-    public interface IRefreshTokenRepository
+    public interface IAuthRepository
     {
         Task<RefreshToken?> GetByHashAsync(string tokenHash);
         Task AddAsync(RefreshToken token);

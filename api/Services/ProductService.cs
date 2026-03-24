@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Contracts.Products;
 using api.Dto;
+using api.Extensions;
 using api.Interfaces;
 using api.Mappers;
+using api.Models;
 
 namespace api.Services
 {
-    
+
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepo;
@@ -18,6 +20,17 @@ namespace api.Services
         {
             _productRepo = productRepo;
             _validator = validator;
+        }
+        private async Task EnsureSkuAsync(Product product, string productName)
+        {
+            var shouldGenerate =
+                string.IsNullOrWhiteSpace(product.Sku) ||
+                await _productRepo.IsSkuTakenAsync(product.Sku, product.Id);
+
+            if (!shouldGenerate)
+                return;
+
+            product.Sku = SkuGenerator.Generate(productName);
         }
 
         public async Task<IReadOnlyList<ProductDto>> GetAllAsync()
@@ -38,21 +51,26 @@ namespace api.Services
 
             var entity = ProductMapper.ToEntity(createProduct);
 
-            await _productRepo.CrateAsync(entity);
+            await EnsureSkuAsync(entity, createProduct.Name);
+
+            await _productRepo.CreateAsync(entity);
             await _productRepo.SaveAsync();
 
-            return ProductMapper.ToDto(entity);
+            return entity.ToDto();
         }
 
         public async Task<ProductDto> UpdateAsync(Guid id, UpdateProductRequest updateProduct)
         {
-            var existingProduct = await _productRepo.GetByIdAsync(id);
-            if (existingProduct is null)
-                throw new ArgumentException("Product does not exist");
+            var existingProduct = await _productRepo.GetByIdAsync(id)
+                ?? throw new ArgumentException("Product does not exist");
 
             existingProduct.ApplyUpdate(updateProduct);
+
+            await EnsureSkuAsync(existingProduct, existingProduct.Name);
+
             await _productRepo.SaveAsync();
-            return existingProduct.ToDto();         
+
+            return existingProduct.ToDto();
         }
 
         public async Task<bool> DeleteAsync(Guid id)
@@ -62,6 +80,7 @@ namespace api.Services
             if (product == null) return false;
 
             await _productRepo.DeleteAsync(id);
+            await _productRepo.SaveAsync();
             return true;
         }
     }

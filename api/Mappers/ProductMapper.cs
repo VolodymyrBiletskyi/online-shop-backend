@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Contracts.Products;
 using api.Dto;
+using api.Extensions;
 using api.Models;
 
 namespace api.Mappers
@@ -23,12 +24,13 @@ namespace api.Mappers
                 SortOrder = product.SortOrder,
                 BasePrice = product.BasePrice,
                 IsActive = product.IsActive,
+                Available = product.Available,
                 CreatedAt = product.CreatedAt
 
             };
         }
 
-        public static void ApplyUpdate(this Product entity,UpdateProductRequest updateProduct)
+        public static void ApplyUpdate(this Product entity, UpdateProductRequest updateProduct)
         {
             entity.CategoryId = updateProduct.CategoryId;
             entity.Name = updateProduct.Name;
@@ -39,6 +41,7 @@ namespace api.Mappers
             entity.SortOrder = updateProduct.SortOrder;
             entity.BasePrice = updateProduct.BasePrice;
             entity.IsActive = updateProduct.IsActive;
+            entity.Available = updateProduct.Available;
         }
 
         public static Product ToEntity(this CreateProduct createProduct)
@@ -49,13 +52,18 @@ namespace api.Mappers
                 CategoryId = createProduct.CategoryId,
                 Name = createProduct.Name,
                 Slug = string.IsNullOrWhiteSpace(createProduct.Slug)
-                    ?GenerateSlug(createProduct.Name)
-                    :createProduct.Slug,
+                    ? GenerateSlug(createProduct.Name)
+                    : createProduct.Slug,
                 Description = createProduct.Description,
                 SortOrder = createProduct.SortOrder,
                 BasePrice = createProduct.BasePrice,
                 IsActive = createProduct.IsActive,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                Sku = string.IsNullOrWhiteSpace(createProduct.Sku)
+                    ? SkuGenerator.Generate(createProduct.Name)
+                    : createProduct.Sku.Trim().ToUpperInvariant(),
+                Available = createProduct.Available,
+                Attributes = createProduct.Attributes ?? new()
             };
         }
 

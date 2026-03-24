@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api.Data;
@@ -12,9 +13,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260320170050_delete-products-variant")]
+    partial class deleteproductsvariant
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,6 +152,29 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Coupons");
+                });
+
+            modelBuilder.Entity("api.Models.Inventory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("QuantityOnHand")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("QuantityReserved")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("Inventory", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.Order", b =>
@@ -411,18 +437,15 @@ namespace api.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Sku")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Slug")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("text");
 
                     b.Property<int>("SortOrder")
                         .HasColumnType("integer");
@@ -430,9 +453,6 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("Sku")
-                        .IsUnique();
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -466,7 +486,7 @@ namespace api.Migrations
 
                     b.HasIndex("ProductId", "IsPrimary")
                         .IsUnique()
-                        .HasFilter("\"IsPrimary\" = true");
+                        .HasFilter("\"ProductId\"  IS NOT NULL AND \"IsPrimary\" = true");
 
                     b.ToTable("ProductImages", (string)null);
                 });
@@ -693,6 +713,17 @@ namespace api.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("api.Models.Inventory", b =>
+                {
+                    b.HasOne("api.Models.Product", "Product")
+                        .WithMany("InventoryItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("api.Models.Order", b =>
                 {
                     b.HasOne("api.Models.User", "User")
@@ -767,7 +798,7 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Product", b =>
                 {
                     b.HasOne("api.Models.Category", "Category")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -836,8 +867,6 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Category", b =>
                 {
                     b.Navigation("Children");
-
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("api.Models.Coupon", b =>
@@ -867,6 +896,8 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Product", b =>
                 {
                     b.Navigation("Images");
+
+                    b.Navigation("InventoryItems");
 
                     b.Navigation("Items");
 
