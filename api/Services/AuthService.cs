@@ -9,19 +9,19 @@ using api.Models;
 
 namespace api.Services
 {
-    public class AuthService : IAuthService 
+    public class AuthService : IAuthService
     {
         private readonly IJwtProvider _jwt;
         private readonly IUserRepository _userRepo;
-        private readonly IRefreshTokenRepository _refreshRepo;
+        private readonly IAuthRepository _authRepo;
         private readonly IPasswordHasher _passwordHasher;
 
-        public AuthService(IJwtProvider jwt, IUserRepository userRepo, IRefreshTokenRepository refreshRepo,
+        public AuthService(IJwtProvider jwt, IUserRepository userRepo, IAuthRepository authRepo,
         IPasswordHasher passwordHasher)
         {
             _jwt = jwt;
             _userRepo = userRepo;
-            _refreshRepo = refreshRepo;
+            _authRepo = authRepo;
             _passwordHasher = passwordHasher;
         }
 
@@ -45,7 +45,7 @@ namespace api.Services
 
             var rawRefresh = _jwt.GenerateRefreshTOken();
             var hash = _jwt.HashToken(rawRefresh);
-            
+
             var refreshEntity = new RefreshToken
             {
                 UserId = user.Id,
@@ -54,8 +54,8 @@ namespace api.Services
                 ExpiresAt = DateTime.UtcNow.AddDays(7)
             };
 
-            await _refreshRepo.AddAsync(refreshEntity);
-            await _refreshRepo.SaveChangesAsync();
+            await _authRepo.AddAsync(refreshEntity);
+            await _authRepo.SaveChangesAsync();
 
             var auth = new AuthResult
             {
@@ -75,29 +75,29 @@ namespace api.Services
 
         public async Task LogoutAsync(Guid userId)
         {
-            var activeTokens = await _refreshRepo.GetActiveByUserAsync(userId);
-            
-            if(activeTokens.Count == 0)
+            var activeTokens = await _authRepo.GetActiveByUserAsync(userId);
+
+            if (activeTokens.Count == 0)
                 return;
 
-            foreach(var token in activeTokens)
+            foreach (var token in activeTokens)
             {
                 token.RevokedAt = DateTime.UtcNow;
             }
 
-            await _refreshRepo.SaveChangesAsync();
+            await _authRepo.SaveChangesAsync();
         }
 
         public async Task<AuthWithRefreshToken?> RefeshAsync(string rawRefreshToken)
         {
             var hash = _jwt.HashToken(rawRefreshToken);
-            var token = await _refreshRepo.GetByHashAsync(hash);
+            var token = await _authRepo.GetByHashAsync(hash);
 
-            if(token == null || !token.IsActive)
+            if (token == null || !token.IsActive)
                 return null;
 
             var user = await _userRepo.GetByIdAsync(token.UserId);
-            if(user == null)
+            if (user == null)
                 return null;
 
             token.RevokedAt = DateTime.UtcNow;
@@ -112,9 +112,9 @@ namespace api.Services
                 CreatedAt = DateTime.UtcNow,
                 ExpiresAt = DateTime.UtcNow.AddDays(7)
             };
-            
-            await _refreshRepo.AddAsync(newRefreshEntity);
-            await _refreshRepo.SaveChangesAsync();
+
+            await _authRepo.AddAsync(newRefreshEntity);
+            await _authRepo.SaveChangesAsync();
 
             var newAccessToken = _jwt.GenerateAccesToken(user);
 

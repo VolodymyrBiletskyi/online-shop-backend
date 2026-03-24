@@ -24,10 +24,10 @@ namespace api.Jwt
             _options = options.Value;
             _key = Encoding.UTF8.GetBytes(_options.SecretKey);
         }
-        public int AccessTokenMinutes => _options.AccesTokenMinutes;
+        public int AccessTokenMinutes => _options.AccessTokenMinutes;
 
         public string GenerateAccesToken(User user)
-        {            
+        {
             Claim[] claims = [
                 new("userId", user.Id.ToString()),
                 new("email", user.Email ?? string.Empty)];
@@ -42,7 +42,7 @@ namespace api.Jwt
             issuer: _options.Issuer,
             audience: _options.Audience,
             notBefore: DateTime.UtcNow,
-            expires: DateTime.UtcNow.AddMinutes(_options.AccesTokenMinutes));
+            expires: DateTime.UtcNow.AddMinutes(_options.AccessTokenMinutes));
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

@@ -10,18 +10,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repository
 {
-    public class RefreshTokenRepository : IRefreshTokenRepository
+    public class AuthRepository : IAuthRepository
     {
         private readonly AppDbContext _dbcontext;
-        public RefreshTokenRepository(AppDbContext dbContext)
+        public AuthRepository(AppDbContext dbContext)
         {
             _dbcontext = dbContext;
         }
 
         public Task AddAsync(RefreshToken token)
         {
-           return _dbcontext.AddAsync(token).AsTask();
-            
+            return _dbcontext.AddAsync(token).AsTask();
+
         }
 
         public async Task<List<RefreshToken>> GetActiveByUserAsync(Guid userId)
