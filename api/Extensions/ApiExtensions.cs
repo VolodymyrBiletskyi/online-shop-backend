@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Extensions
 {
-    public static class ApiExtensions 
+    public static class ApiExtensions
     {
         public static IServiceCollection AddApiAuthentication(
             this IServiceCollection services,
@@ -55,6 +55,6 @@ namespace api.Extensions
 
             return services;
         }
-        
+
     }
 }

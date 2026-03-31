@@ -24,6 +24,8 @@ var dataSource = dsBuilder.Build();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(dataSource));
 
+
+
 builder.Services.AddMemoryCache();
 // DI
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -43,7 +45,7 @@ builder.Services.AddScoped<IUserValidator, UserValidator>();
 builder.Services.AddScoped<IProductValidator, ProductValidator>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<Middleware>();
-builder.Services.AddHostedService<AdminSeed>();
+
 
 builder.Services.AddApiAuthentication(builder.Configuration);
 
@@ -85,6 +87,12 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
+
 // using(var scope = app.Services.CreateScope())
 // {
 //     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -113,6 +121,17 @@ app.UseAuthorization();
 
 app.MapOpenApi();
 app.MapControllers();
+
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    foreach (var url in app.Urls)
+    {
+        var displayUrl = url.Replace("[::]", "localhost").Replace("+", "localhost");
+
+        app.Logger.LogInformation("App running at: {Url}", displayUrl);
+        app.Logger.LogInformation("Swagger available at: {SwaggerUrl}", $"{displayUrl}/swagger");
+    }
+});
 
 app.Run();
 
