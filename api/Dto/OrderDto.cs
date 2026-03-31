@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using api.Migrations;
 using api.Models;
 
 namespace api.Dto
@@ -24,7 +23,7 @@ namespace api.Dto
         public decimal ShipAmount { get; set; }
         public string Currency { get; set; } = "USD";
 
-        public DateTime CreatedAt { get; set; } 
+        public DateTime CreatedAt { get; set; }
         public DateTime? PaidAt { get; set; }
         public DateTime? ShippedAt { get; set; }
         public DateTime? DeliveredAt { get; set; }

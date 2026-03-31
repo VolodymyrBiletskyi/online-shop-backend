@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using api.Migrations;
 
 namespace api.Models
 {
@@ -29,7 +28,7 @@ namespace api.Models
         public decimal TaxAmount { get; set; }
         public decimal ShipAmount { get; set; }
         public string Currency { get; set; } = "USD";
-        
+
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? PaidAt { get; set; }
@@ -38,5 +37,5 @@ namespace api.Models
         public DateTime? CancelledAt { get; set; }
 
     }
-    public enum OrderStatus{Created = 0,Paid = 1,Shipped = 2,Delivered = 3,Cancelled = 4,Refunded = 5}
+    public enum OrderStatus { Created = 0, Paid = 1, Shipped = 2, Delivered = 3, Cancelled = 4, Refunded = 5 }
 }

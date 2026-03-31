@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dto;
-using api.Migrations;
 using api.Models;
 
 namespace api.Mappers
@@ -18,10 +17,10 @@ namespace api.Mappers
                 UserId = cart.UserId,
                 CreatedAt = cart.CreatedAt,
                 UpdatedAt = cart.UpdatedAt,
-                Items = cart.Items.Select(i => i.ToDto()).ToList()    
+                Items = cart.Items.Select(i => i.ToDto()).ToList()
             };
         }
 
-        
+
     }
 }
