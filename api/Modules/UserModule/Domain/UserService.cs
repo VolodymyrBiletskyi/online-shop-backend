@@ -1,0 +1,194 @@
+using api.Extensions;
+using api.Models;
+using api.Modules.UserModule.DTOs.Requests;
+using api.Modules.UserModule.DTOs.Responses;
+using api.Modules.UserModule.Mapper;
+using api.Modules.UserModule.Repository;
+
+namespace api.Modules.UserModule.Domain
+{
+    public class UserService : IUserService
+    {
+        private readonly IUserRepository _userRepo;
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly IUserValidator _validator;
+
+        public UserService(IUserRepository userRepo, IPasswordHasher passwordHasher, IUserValidator validator)
+        {
+            _userRepo = userRepo;
+            _passwordHasher = passwordHasher;
+            _validator = validator;
+        }
+
+        public async Task<IReadOnlyList<UserDto>> GetAllAsync()
+        {
+            var users = await _userRepo.GetAllAsync();
+            return users.Select(UserMapper.ToDto).ToList();
+        }
+
+        public async Task<UserDto?> GetByIdAsync(Guid id)
+        {
+            var user = await _userRepo.GetByIdAsync(id);
+            return user is null ? null : UserMapper.ToDto(user);
+        }
+
+        public async Task<UserDto> CreateAsync(CreateUserDto dto)
+        {
+            _validator.ValidateCreateUser(dto);
+
+            var email = dto.Email.Trim().ToLowerInvariant();
+
+            if (await _userRepo.GetByEmailAsync(email) is not null)
+                throw new InvalidOperationException("Email is already taken");
+
+            var passwordHash = _passwordHasher.Hash(dto.Password);
+            var entity = UserMapper.ToEntity(dto, passwordHash);
+
+            await _userRepo.AddAsync(entity);
+            await _userRepo.SaveChangesAsync();
+            return UserMapper.ToDto(entity);
+        }
+
+        public async Task<UserDto> UpdateAsync(Guid id, UpdateUserDto updateDto)
+        {
+            var existingUser = await _userRepo.GetByIdAsync(id);
+            if (existingUser is null)
+                throw new InvalidOperationException("User does not exist");
+
+            var newEmail = updateDto.Email.Trim();
+            var emailChanged = !string.Equals(existingUser.Email, newEmail, StringComparison.OrdinalIgnoreCase);
+
+            if (emailChanged)
+            {
+                var byEmail = await _userRepo.GetByEmailAsync(newEmail);
+                if (byEmail is not null && byEmail.Id != id)
+                    throw new InvalidOperationException("Email is already taken");
+                existingUser.Email = newEmail!;
+            }
+
+            existingUser.ApplyUpdateFrom(updateDto);
+
+            await _userRepo.SaveChangesAsync();
+            return existingUser.ToDto();
+        }
+
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            var user = await _userRepo.GetByIdAsync(id);
+            if (user == null) return false;
+
+            await _userRepo.DeleteAsync(id);
+            return true;
+        }
+
+        public async Task<UserAddressDto> AddAddressAsync(Guid userId, AddUserAddress address)
+        {
+            var user = await _userRepo.GetByIdAsync(userId)
+                ?? throw new InvalidOperationException("User does not exist");
+
+            var exists = await _userRepo.AddressExistsAsync(userId, address.Street, address.NumOfObject, address.City);
+            if (exists)
+                throw new InvalidOperationException("This address already added");
+
+            var userAddress = UserMapper.ToAddressEntity(address);
+            userAddress.UserId = userId;
+
+            var existingDefault = await _userRepo.GetDefaultUserAddressAsync(userId);
+            if (address.IsDefault == true && existingDefault != null)
+                throw new InvalidOperationException("User can not have more then 1 default address");
+
+            await _userRepo.AddAddressAsync(userAddress);
+            await _userRepo.SaveChangesAsync();
+
+            return userAddress.ToAddressDto();
+        }
+
+        public async Task<UserAddressDto?> GetDefaultUserAddressAsync(Guid userId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId)
+                ?? throw new InvalidOperationException("User does not exist");
+
+            var address = await _userRepo.GetDefaultUserAddressAsync(userId);
+            return address?.ToAddressDto();
+        }
+
+        public async Task<IReadOnlyList<UserAddressDto>> GetAllUserAddressesAsync(Guid userId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId)
+                ?? throw new InvalidOperationException("User does not exist");
+
+            var addresses = await _userRepo.GetAllUserAddresses(userId);
+            return addresses.Select(UserMapper.ToAddressDto).ToList();
+        }
+
+        public async Task<UserAddressDto?> DeleteUserAddressAsync(Guid userId, Guid addressId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId)
+                ?? throw new InvalidOperationException("User does not exist");
+
+            var existingAddress = await _userRepo.GetAddressByIdAsync(addressId)
+                ?? throw new InvalidOperationException("Address does not exist");
+
+            var address = await _userRepo.DeleteAddressAsync(userId, addressId)
+                ?? throw new InvalidOperationException("Failed to delete address");
+            return address.ToAddressDto();
+        }
+
+        public async Task<UserAddressDto> UpdateAddressAsync(Guid addressId, UpdateAddress update)
+        {
+            var address = await _userRepo.GetAddressByIdAsync(addressId)
+                ?? throw new InvalidOperationException("Address does not exist");
+
+            address.UpdateAddress(update);
+            await _userRepo.SaveChangesAsync();
+            return address.ToAddressDto();
+        }
+
+        public async Task<UserAddressDto> UpdateAddressDefaultAsync(Guid addressId)
+        {
+            var address = await _userRepo.GetAddressByIdAsync(addressId)
+                ?? throw new InvalidOperationException("Address does not exist");
+
+            if (address.IsDefault)
+                throw new InvalidOperationException("This address is already the default one");
+
+            var currentDefault = await _userRepo.GetDefaultUserAddressAsync(address.UserId);
+            if (currentDefault != null)
+                currentDefault.IsDefault = false;
+
+            address.IsDefault = true;
+            await _userRepo.SaveChangesAsync();
+            return address.ToAddressDto();
+        }
+
+        public async Task<IReadOnlyList<UserDto>> GetAllAdminsAsync()
+        {
+            var admins = await _userRepo.GetAdminsAsync();
+            return admins.Select(UserMapper.ToDto).ToList();
+        }
+
+        public async Task EnsureAdminExistsAsync(string email, string password)
+        {
+            var hasAdmin = await _userRepo.AnyAdminExist(UserRole.Admin);
+            if (hasAdmin) return;
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+                throw new InvalidOperationException("admin email/password are required");
+
+            var normalEmail = email.Trim().ToLowerInvariant();
+            var existing = await _userRepo.GetByEmailAsync(normalEmail);
+
+            if (existing is not null)
+            {
+                existing.Role = UserRole.Admin;
+                await _userRepo.SaveChangesAsync();
+                return;
+            }
+
+            var passwordHash = _passwordHasher.Hash(password);
+            var admin = UserMapper.Create(normalEmail, "Admin", passwordHash, UserRole.Admin);
+            await _userRepo.AddAsync(admin);
+            await _userRepo.SaveChangesAsync();
+        }
+    }
+}

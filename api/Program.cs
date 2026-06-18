@@ -1,20 +1,15 @@
 using api.Data;
-using api.Extensions;
-using api.Interfaces;
-using api.Jwt;
-using api.Middleware;
-using api.Repository;
-using api.Seeders;
-using api.Services;
-using api.Validators;
+using api.Modules.AuthModule;
+using api.Modules.CartModule;
+using api.Modules.CategoryModule;
+using api.Modules.OrderModule;
+using api.Modules.ProductModule;
+using api.Modules.UserModule;
+using api.Modules.AuthModule.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.Configure<JwtOptions>(
-    builder.Configuration.GetSection("JwtOptions")
-);
 
 var cs = builder.Configuration.GetConnectionString("DefaultConnection");
 var dsBuilder = new Npgsql.NpgsqlDataSourceBuilder(cs);
@@ -24,30 +19,14 @@ var dataSource = dsBuilder.Build();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(dataSource));
 
-
-
 builder.Services.AddMemoryCache();
-// DI
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<ICartRepository, CartRepository>();
-builder.Services.AddScoped<ICartService, CartService>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IJwtProvider, JwtProvider>();
-builder.Services.AddScoped<IUserValidator, UserValidator>();
-builder.Services.AddScoped<IProductValidator, ProductValidator>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-builder.Services.AddScoped<Middleware>();
 
-
-builder.Services.AddApiAuthentication(builder.Configuration);
+builder.Services.AddAuthModule(builder.Configuration);
+builder.Services.AddUserModule();
+builder.Services.AddProductModule();
+builder.Services.AddCategoryModule();
+builder.Services.AddCartModule();
+builder.Services.AddOrderModule();
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(options =>
@@ -72,10 +51,10 @@ builder.Services.AddSwaggerGen(options =>
             {
                 Reference = new OpenApiReference
                 {
-                     Type = ReferenceType.SecurityScheme,
-                     Id = "Bearer"
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
                 },
-                Scheme = "oath2",
+                Scheme = "oauth2",
                 Name = "Bearer",
                 In = ParameterLocation.Header
             },
@@ -93,13 +72,6 @@ using (var scope = app.Services.CreateScope())
     await dbContext.Database.MigrateAsync();
 }
 
-// using(var scope = app.Services.CreateScope())
-// {
-//     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-//     DbSeeder.Seed(db);
-// }
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -111,12 +83,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-
 app.UseRouting();
 app.UseAuthentication();
-
-app.UseMiddleware<Middleware>();
-
+app.UseMiddleware<RoleMiddleware>();
 app.UseAuthorization();
 
 app.MapOpenApi();
@@ -127,11 +96,9 @@ app.Lifetime.ApplicationStarted.Register(() =>
     foreach (var url in app.Urls)
     {
         var displayUrl = url.Replace("[::]", "localhost").Replace("+", "localhost");
-
         app.Logger.LogInformation("App running at: {Url}", displayUrl);
         app.Logger.LogInformation("Swagger available at: {SwaggerUrl}", $"{displayUrl}/swagger");
     }
 });
 
 app.Run();
-

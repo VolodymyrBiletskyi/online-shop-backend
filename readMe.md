@@ -1,36 +1,74 @@
-# Online Shop Backend — Setup Guide
+# Online Shop Backend
 
-## Clone the repository
+## Tech Stack
+
+| Layer            | Technology                                    |
+| ---------------- | --------------------------------------------- |
+| Framework        | ASP.NET Core 9                                |
+| Language         | C# 12                                         |
+| Database         | PostgreSQL                                    |
+| ORM              | Entity Framework Core 9                       |
+| Authentication   | JWT Bearer + Refresh Tokens (HttpOnly cookie) |
+| Password Hashing | BCrypt                                        |
+| API Docs         | Swagger / OpenAPI                             |
+| Containerization | Docker + Docker Compose                       |
+
+## Features
+
+- JWT authentication with refresh token rotation
+- Role-based access control (Customer / Admin)
+- Product catalog with categories and image support
+- Shopping cart with price snapshots
+- Order lifecycle management (Created → Paid → Shipped → Delivered)
+- Automatic admin seeding on first startup
+- EF Core migrations applied automatically on startup
+
+## Project Structure
+
+```
+api/
+├── Data/
+│   ├── AppDbContext.cs
+│   └── Configurations/        # EF Core entity configurations
+├── Models/                    # Domain entities
+├── Extensions/                # Helpers (PasswordHasher, SkuGenerator, etc.)
+└── Modules/
+    ├── AuthModule/            # Login, logout, refresh token
+    ├── UserModule/            # User CRUD, addresses
+    ├── ProductModule/         # Product CRUD, SKU generation
+    ├── CategoryModule/        # Category tree
+    ├── CartModule/            # Cart and cart items
+    └── OrderModule/           # Order creation and management
+```
+
+Each module follows the same internal structure:
+
+```
+SomeModule/
+├── Api/           # Controller
+├── Domain/        # Service interface + implementation
+├── Repository/    # Repository interface + implementation
+├── DTOs/          # Request and response models
+└── Mapper/        # Entity ↔ DTO mapping
+```
+
+## Running Locally
+
+### Prerequisites
+
+- [.NET 9 SDK](https://dotnet.microsoft.com/download)
+- PostgreSQL instance
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/VolodymyrBiletskyi/online-shop-backend.git
 cd online-shop-backend
 ```
 
----
+### 2. Configure the environment
 
-## Run locally
-
-### 1. Go to the API project
-
-```bash
-cd api
-```
-
-### 2. Restore dependencies
-
-```bash
-dotnet restore
-```
-
-### 3. Configure environment
-
-Before launch, make sure your configuration contains:
-
-- PostgreSQL connection string
-- JWT settings
-
-For example, in `appsettings.Development.json` or through environment variables:
+Create `api/appsettings.Development.json`:
 
 ```json
 {
@@ -38,125 +76,70 @@ For example, in `appsettings.Development.json` or through environment variables:
     "DefaultConnection": "Host=localhost;Port=5432;Database=AppDb;Username=postgres;Password=your_password"
   },
   "JwtOptions": {
-    "SecretKey": "your_long_secret_key_here",
+    "SecretKey": "your_secret_key_min_32_chars_long",
     "Issuer": "OnlineShop",
-    "Audience": "OnlineShopUsers"
+    "Audience": "OnlineShopUsers",
+    "AccessTokenMinutes": 15
+  },
+  "AdminSeed": {
+    "Email": "admin@example.com",
+    "Password": "your_admin_password"
   }
 }
 ```
 
-### 4. Apply migrations
-
-From the `api` folder:
+### 3. Run
 
 ```bash
-dotnet ef database update
-```
-
-### 5. Run the application
-
-```bash
+cd api
 dotnet run
 ```
 
-The API should be available at:
-
-```text
-http://localhost:<YOURPORT>
-```
-
-### Swagger
-
-After startup, open Swagger in the browser:
-
-```text
-http://localhost:<YOURPORT>/swagger
-```
+Migrations are applied automatically on startup. The URL is printed in the console. Swagger is at `/swagger`.
 
 ---
 
-## Run with Docker Compose
+## Running with Docker Compose
 
-### 1. Go to the project root
-
-Make sure you are in the root folder, where these files are located:
-
-- `Dockerfile`
-- `docker-compose.yml`
-- `.env`
-- `OnlineShopBackend.sln`
-
-### 2. Prepare the `.env` file
-
-Example:
+### 1. Create a `.env` file in the project root
 
 ```env
 POSTGRES_DB=AppDb
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=your_db_password
 
-JWT_SECRET=your_long_secret_key_here
+JWT_SECRET=your_secret_key_min_32_chars_long
 JWT_ISSUER=OnlineShop
 JWT_AUDIENCE=OnlineShopUsers
+
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=your_admin_password
 ```
 
-### 3. Start containers
+### 2. Start
 
 ```bash
 docker compose up --build
 ```
 
-To run in background:
+Run in the background:
 
 ```bash
 docker compose up --build -d
 ```
 
-### 4. Open Swagger
+Swagger will be available at `http://localhost:8080/swagger`.
 
-After the containers start, Swagger should be available at:
-
-```text
-http://localhost:8080/swagger
-```
-
----
-
-## Stop Docker containers
+### 3. Stop
 
 ```bash
 docker compose down
 ```
 
-This stops and removes containers, but keeps PostgreSQL data if a Docker volume is used.
-
-To remove containers **and** database data:
+To also remove the database volume:
 
 ```bash
 docker compose down -v
-```
-
----
-
-## Useful commands
-
-### View logs
-
-```bash
-docker compose logs -f
-```
-
-### View only API logs
-
-```bash
-docker compose logs -f api
-```
-
-### Rebuild from scratch
-
-```bash
-docker compose down
-docker compose up --build --force-recreate
 ```
 
 ---
