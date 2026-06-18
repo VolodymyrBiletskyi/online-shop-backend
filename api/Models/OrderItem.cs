@@ -1,25 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace api.Models
+﻿namespace api.Models;
+public class OrderItem
 {
-    public class OrderItem
-    {
-        public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; } = Guid.NewGuid();
 
-        public Guid OrderId { get; set; }
-        public Order Order { get; set; } = null!;
-        public Guid ProductId { get; set; }
-        public Product Product { get; set; } = null!;
+    public Guid OrderId { get; set; }
+    public Order Order { get; set; } = null!;
+    public Guid ProductId { get; set; }
+    public Product Product { get; set; } = null!;
 
-        public string ProductNameSnapshot { get; set; } = null!;
-        public string SkuSnapshot { get; set; } = null!;
-        public string? AttributesSnapshot { get; set; }
+    public string ProductNameSnapshot { get; set; } = null!;
+    public string SkuSnapshot { get; set; } = null!;
+    public string? AttributesSnapshot { get; set; }
 
-        public decimal UnitPrice { get; set; }
-        public int Quantity { get; set; }
-        public decimal TotalLine { get; set; }
-    }
+    public decimal UnitPrice { get; set; }
+    public int Quantity { get; set; }
+    public decimal TotalLine { get; set; }
 }

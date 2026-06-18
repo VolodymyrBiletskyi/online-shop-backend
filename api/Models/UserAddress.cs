@@ -1,30 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace api.Models
+﻿namespace api.Models;
+public class UserAddress
 {
-    public class UserAddress
-    {
-        public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; } = Guid.NewGuid();
 
-        public Guid UserId { get; set; }
-        public User User { get; set; } = null!;
+    public Guid UserId { get; set; }
+    public User User { get; set; } = null!;
 
-        public AddressType Type { get; set; } = AddressType.Shipping;
-        public string Country { get; set; } = null!;
-        public string City { get; set; } = null!;
-        public string Street { get; set; } = null!;
-        public string NumOfObject { get; set; } = null!;
-        public string PostalCode { get; set; } = null!;
+    public AddressType Type { get; set; } = AddressType.Shipping;
+    public string Country { get; set; } = null!;
+    public string City { get; set; } = null!;
+    public string Street { get; set; } = null!;
+    public string NumOfObject { get; set; } = null!;
+    public string PostalCode { get; set; } = null!;
 
-        public bool IsDefault { get; set; } = false;
-    }
-    
-    public enum AddressType
-    {
-        Shipping = 0,
-        Billing = 1
-    }
+    public bool IsDefault { get; set; } = false;
+}
+
+public enum AddressType
+{
+    Shipping = 0,
+    Billing = 1
 }

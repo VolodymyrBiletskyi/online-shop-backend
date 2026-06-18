@@ -29,7 +29,7 @@ namespace api.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
-        public DbSet<OrderAddress> OrderAdresses { get; set; }
+        public DbSet<OrderAddress> OrderAddresses { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<OrderDiscount> OrderDiscounts { get; set; }
         public DbSet<Refund> Refunds { get; set; }

@@ -28,3 +28,7 @@ logs/
 api/Data/DbSeeder.cs
 
 .fake
+
+# Claude Code
+.agents/
+.claude/
