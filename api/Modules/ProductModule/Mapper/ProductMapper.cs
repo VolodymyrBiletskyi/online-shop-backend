@@ -1,0 +1,70 @@
+using api.Extensions;
+using api.Models;
+using api.Modules.ProductModule.DTOs.Requests;
+using api.Modules.ProductModule.DTOs.Responses;
+
+namespace api.Modules.ProductModule.Mapper
+{
+    public static class ProductMapper
+    {
+        public static ProductDto ToDto(this Product product)
+        {
+            return new ProductDto
+            {
+                Id = product.Id,
+                CategoryId = product.CategoryId,
+                CategoryName = product.Category?.Name,
+                Name = product.Name,
+                Slug = product.Slug,
+                Description = product.Description,
+                SortOrder = product.SortOrder,
+                BasePrice = product.BasePrice,
+                IsActive = product.IsActive,
+                Available = product.Available,
+                CreatedAt = product.CreatedAt
+            };
+        }
+
+        public static void ApplyUpdate(this Product entity, UpdateProductRequest updateProduct)
+        {
+            entity.CategoryId = updateProduct.CategoryId;
+            entity.Name = updateProduct.Name;
+            entity.Slug = string.IsNullOrWhiteSpace(updateProduct.Slug)
+                ? GenerateSlug(updateProduct.Name)
+                : updateProduct.Slug;
+            entity.Description = updateProduct.Description;
+            entity.SortOrder = updateProduct.SortOrder;
+            entity.BasePrice = updateProduct.BasePrice;
+            entity.IsActive = updateProduct.IsActive;
+            entity.Available = updateProduct.Available;
+        }
+
+        public static Product ToEntity(this CreateProduct createProduct)
+        {
+            return new Product
+            {
+                Id = Guid.NewGuid(),
+                CategoryId = createProduct.CategoryId,
+                Name = createProduct.Name,
+                Slug = string.IsNullOrWhiteSpace(createProduct.Slug)
+                    ? GenerateSlug(createProduct.Name)
+                    : createProduct.Slug,
+                Description = createProduct.Description,
+                SortOrder = createProduct.SortOrder,
+                BasePrice = createProduct.BasePrice,
+                IsActive = createProduct.IsActive,
+                CreatedAt = DateTime.UtcNow,
+                Sku = string.IsNullOrWhiteSpace(createProduct.Sku)
+                    ? SkuGenerator.Generate(createProduct.Name)
+                    : createProduct.Sku.Trim().ToUpperInvariant(),
+                Available = createProduct.Available,
+                Attributes = createProduct.Attributes ?? new()
+            };
+        }
+
+        private static string GenerateSlug(string name)
+            => name.Trim().ToLowerInvariant()
+                    .Replace(' ', '-')
+                    .Replace("--", "-");
+    }
+}

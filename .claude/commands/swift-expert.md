@@ -1,0 +1,1 @@
+﻿Read the skill file at .agents/skills/swift-expert/SKILL.md and any referenced files under .agents/skills/swift-expert/references/ that are relevant to the current task. Apply the skill's constraints, workflow, and patterns to everything you do in this session.

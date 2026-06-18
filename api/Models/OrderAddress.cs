@@ -1,25 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using api.Models;
-
-namespace api.Models
+﻿namespace api.Models;
+public class OrderAddress
 {
-    public class OrderAddress
-    {
-        public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; } = Guid.NewGuid();
 
-        public Guid OrderId { get; set; }
-        public Order Order { get; set; } = null!;
+    public Guid OrderId { get; set; }
+    public Order Order { get; set; } = null!;
 
-        public AddressType Type { get; set; } = AddressType.Shipping;
+    public AddressType Type { get; set; } = AddressType.Shipping;
 
-        public string Country { get; set; } = null!;
-        public string City { get; set; } = null!;
-        public string Street { get; set; } = null!;
-        public string BuildingNumber { get; set; } = null!;
-        public string PostalCode { get; set; } = null!;
+    public string Country { get; set; } = null!;
+    public string City { get; set; } = null!;
+    public string Street { get; set; } = null!;
+    public string BuildingNumber { get; set; } = null!;
+    public string PostalCode { get; set; } = null!;
 
-    }
 }
